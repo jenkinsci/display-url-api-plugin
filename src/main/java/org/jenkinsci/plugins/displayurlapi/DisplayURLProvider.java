@@ -28,6 +28,9 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
         return Iterables.getFirst(jenkins.getExtensionList(DisplayURLProvider.class), CLASSIC_DISPLAY_URL_PROVIDER);
     }
 
+    /** Fully qualified URL for the Root display URL */
+    public abstract String getRoot();
+
     /** Fully qualified URL for a Run */
     public abstract String getRunURL(Run<?, ?> run);
 
@@ -54,7 +57,8 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
             return getRoot() + project.getUrl();
         }
 
-        static String getRoot() {
+        @Override
+        public String getRoot() {
             Jenkins jenkins = Jenkins.getInstance();
             if (jenkins == null) {
                 throw new IllegalStateException("Jenkins has not started");
