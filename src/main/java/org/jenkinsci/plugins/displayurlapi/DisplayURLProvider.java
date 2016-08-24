@@ -21,7 +21,11 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
      * @return DisplayURLProvider
      */
     public static DisplayURLProvider get() {
-        return Iterables.getFirst(Jenkins.getInstance().getExtensionList(DisplayURLProvider.class), CLASSIC_DISPLAY_URL_PROVIDER);
+        Jenkins jenkins = Jenkins.getInstance();
+        if (jenkins == null) {
+            throw new IllegalStateException("Jenkins has not started");
+        }
+        return Iterables.getFirst(jenkins.getExtensionList(DisplayURLProvider.class), CLASSIC_DISPLAY_URL_PROVIDER);
     }
 
     /** Fully qualified URL for a Run */
@@ -51,7 +55,11 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
         }
 
         static String getRoot() {
-            String root = Jenkins.getInstance().getRootUrl();
+            Jenkins jenkins = Jenkins.getInstance();
+            if (jenkins == null) {
+                throw new IllegalStateException("Jenkins has not started");
+            }
+            String root = jenkins.getRootUrl();
             if (root == null) {
                 throw new IllegalStateException("Could not determine Jenkins URL. You should set one in Manage Jenkins.");
             }
