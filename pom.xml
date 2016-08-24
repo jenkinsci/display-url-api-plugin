@@ -54,7 +54,7 @@
     <pluginRepository>
       <id>repo.jenkins-ci.org</id>
       <url>https://repo.jenkins-ci.org/public/</url>
-    </pluginRepository>StatusCommandStatusCommand.java
+    </pluginRepository>
   </pluginRepositories>
   <dependencies>
     <dependency>
