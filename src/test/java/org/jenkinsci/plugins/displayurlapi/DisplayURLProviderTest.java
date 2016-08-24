@@ -6,6 +6,7 @@ import hudson.model.AbstractProject;
 import hudson.model.Item;
 import hudson.model.ItemGroup;
 import hudson.model.Job;
+import hudson.model.Project;
 import hudson.model.Run;
 import hudson.model.TaskListener;
 import jenkins.model.Jenkins;
@@ -33,6 +34,8 @@ public class DisplayURLProviderTest {
     private Run<?, ?> run;
     @Mock
     private Job<?, ?> job;
+    @Mock
+    private ItemGroup mockItemGroup;
 
     @Test
     public void urls() {
@@ -44,9 +47,11 @@ public class DisplayURLProviderTest {
 
     @Before
     public void setupMocks() throws Exception {
-        given(job.getUrl()).willReturn("job/foo/");
+        given(job.getParent()).willReturn(mockItemGroup);
+        given(job.getShortUrl()).willReturn("/foo/");
         given(run.getUrl()).willReturn("job/foo/32/");
         given(run.getParent()).willReturn((Job)job);
+        given(mockItemGroup.getUrl()).willReturn("job");
     }
 
     class JenkinsRuleWithLocalPort extends JenkinsRule {
