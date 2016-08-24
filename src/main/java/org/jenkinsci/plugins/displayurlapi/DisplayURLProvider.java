@@ -2,10 +2,14 @@ package org.jenkinsci.plugins.displayurlapi;
 
 import com.google.common.collect.Iterables;
 import hudson.ExtensionPoint;
+import hudson.Util;
 import hudson.model.Item;
 import hudson.model.Job;
 import hudson.model.Project;
 import hudson.model.Run;
+import hudson.tasks.junit.TestResult;
+import hudson.tasks.test.AbstractTestResultAction;
+import hudson.tasks.test.TestObject;
 import jenkins.model.Jenkins;
 
 /**
@@ -40,6 +44,9 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
     /** Fully qualified URL for a Jobs home */
     public abstract String getJobURL(Job<?, ?> project);
 
+    /** Fully qualified URL to the test details page for a given test result */
+    public abstract String getTestUrl(hudson.tasks.test.TestResult result);
+
     /** URL Factory for the Classical Jenkins UI */
     static class ClassicDisplayURLProvider extends DisplayURLProvider {
         @Override
@@ -71,6 +78,36 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
                 root = root.substring(0, root.length() - 1);
             }
             return root;
+        }
+
+        @Override
+        public String getTestUrl(hudson.tasks.test.TestResult result) {
+            String buildUrl = getRunURL(result.getRun());
+            AbstractTestResultAction action = result.getTestResultAction();
+
+            TestObject parent = result.getParent();
+            TestResult testResultRoot = null;
+            while(parent != null) {
+                if (parent instanceof TestResult) {
+                    testResultRoot = (TestResult) parent;
+                    break;
+                }
+                parent = parent.getParent();
+            }
+
+            String testUrl = action.getUrlName()
+                    + (testResultRoot != null ? testResultRoot.getUrl() : "")
+                    + result.getUrl();
+
+            String[] pathComponents = testUrl.split("/");
+            StringBuilder buf = new StringBuilder();
+            for (String c : pathComponents) {
+                buf.append(Util.rawEncode(c)).append('/');
+            }
+            // remove last /
+            buf.deleteCharAt(buf.length() - 1);
+
+            return buildUrl + buf.toString();
         }
     }
 }
