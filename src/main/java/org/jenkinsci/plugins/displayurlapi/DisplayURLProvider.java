@@ -74,9 +74,6 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
             if (root == null) {
                 throw new IllegalStateException("Could not determine Jenkins URL. You should set one in Manage Jenkins.");
             }
-            if (root.endsWith("/")) {
-                root = root.substring(0, root.length() - 1);
-            }
             return root;
         }
 
