@@ -13,7 +13,7 @@ node('docker') {
   /* Make sure our directory is there, if Docker creates it, it gets owned by 'root' */
   sh 'mkdir -p $HOME/.m2'
   
-  docker.image('maven:3.3.9-jdk-7').inside(containerArgs) {
+  docker.image('maven:3.3-jdk-7').inside(containerArgs) {
     timestamps {
       sh 'mvn -B -U -e -Dmaven.test.failure.ignore=true -Duser.home=/var/maven clean install'
     }
