@@ -72,7 +72,7 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
             }
             String root = jenkins.getRootUrl();
             if (root == null) {
-                throw new IllegalStateException("Could not determine Jenkins URL. You should set one in Manage Jenkins.");
+                root = "http://unconfigured-jenkins-location/";
             }
             return root;
         }
