@@ -51,7 +51,7 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
     static class ClassicDisplayURLProvider extends DisplayURLProvider {
         @Override
         public String getRunURL(Run<?, ?> run) {
-            return getRoot() + run.getUrl();
+            return getRoot() + Util.encode(run.getUrl());
         }
 
         @Override
@@ -61,7 +61,7 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
 
         @Override
         public String getJobURL(Job<?, ?> project) {
-            return getRoot() + project.getUrl();
+            return getRoot() + Util.encode(project.getUrl());
         }
 
         @Override
@@ -74,7 +74,7 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
             if (root == null) {
                 root = "http://unconfigured-jenkins-location/";
             }
-            return root;
+            return Util.encode(root);
         }
 
         @Override
