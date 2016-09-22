@@ -33,7 +33,17 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
     }
 
     /** Fully qualified URL for the Root display URL */
-    public abstract String getRoot();
+    public String getRoot() {
+        Jenkins jenkins = Jenkins.getInstance();
+        if (jenkins == null) {
+            throw new IllegalStateException("Jenkins has not started");
+        }
+        String root = jenkins.getRootUrl();
+        if (root == null) {
+            root = "http://unconfigured-jenkins-location/";
+        }
+        return Util.encode(root);
+    }
 
     /** Fully qualified URL for a Run */
     public abstract String getRunURL(Run<?, ?> run);
@@ -62,19 +72,6 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
         @Override
         public String getJobURL(Job<?, ?> project) {
             return getRoot() + Util.encode(project.getUrl());
-        }
-
-        @Override
-        public String getRoot() {
-            Jenkins jenkins = Jenkins.getInstance();
-            if (jenkins == null) {
-                throw new IllegalStateException("Jenkins has not started");
-            }
-            String root = jenkins.getRootUrl();
-            if (root == null) {
-                root = "http://unconfigured-jenkins-location/";
-            }
-            return Util.encode(root);
         }
 
         @Override
