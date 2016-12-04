@@ -1,16 +1,11 @@
 package org.jenkinsci.plugins.displayurlapi;
 
-import com.google.common.collect.Iterables;
 import hudson.ExtensionPoint;
 import hudson.Util;
-import hudson.model.Item;
 import hudson.model.Job;
-import hudson.model.Project;
 import hudson.model.Run;
-import hudson.tasks.junit.TestResult;
-import hudson.tasks.test.AbstractTestResultAction;
-import hudson.tasks.test.TestObject;
 import jenkins.model.Jenkins;
+import org.jenkinsci.plugins.displayurlapi.actions.AbstractDisplayAction;
 
 /**
  * Generates URLs for well known UI locations for use in notifications (e.g. mailer, HipChat, Slack, IRC, etc)
@@ -18,27 +13,20 @@ import jenkins.model.Jenkins;
  */
 public abstract class DisplayURLProvider implements ExtensionPoint {
 
-    private static final ClassicDisplayURLProvider CLASSIC_DISPLAY_URL_PROVIDER = new ClassicDisplayURLProvider();
-
     /**
-     * Returns the first {@link DisplayURLProvider} found
      * @return DisplayURLProvider
      */
     public static DisplayURLProvider get() {
-        Jenkins jenkins = Jenkins.getInstance();
-        if (jenkins == null) {
-            throw new IllegalStateException("Jenkins has not started");
-        }
-        return Iterables.getFirst(jenkins.getExtensionList(DisplayURLProvider.class), CLASSIC_DISPLAY_URL_PROVIDER);
+        return DisplayURLProviderImpl.INSTANCE;
+    }
+
+    public static Iterable<DisplayURLProvider> all() {
+        return getJenkins().getExtensionList(DisplayURLProvider.class);
     }
 
     /** Fully qualified URL for the Root display URL */
     public String getRoot() {
-        Jenkins jenkins = Jenkins.getInstance();
-        if (jenkins == null) {
-            throw new IllegalStateException("Jenkins has not started");
-        }
-        String root = jenkins.getRootUrl();
+        String root = getJenkins().getRootUrl();
         if (root == null) {
             root = "http://unconfigured-jenkins-location/";
         }
@@ -52,56 +40,44 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
     public abstract String getChangesURL(Run<?, ?> run);
 
     /** Fully qualified URL for a Jobs home */
-    public abstract String getJobURL(Job<?, ?> project);
+    public abstract String getJobURL(Job<?, ?> job);
 
     /** Fully qualified URL to the test details page for a given test result */
     public abstract String getTestUrl(hudson.tasks.test.TestResult result);
 
-    /** URL Factory for the Classical Jenkins UI */
-    static class ClassicDisplayURLProvider extends DisplayURLProvider {
+    static class DisplayURLProviderImpl extends ClassicDisplayURLProvider {
+
+        public static final DisplayURLProvider INSTANCE = new DisplayURLProviderImpl();
+
+        public static final String DISPLAY_POSTFIX = AbstractDisplayAction.URL_NAME + "/redirect";
+
         @Override
         public String getRunURL(Run<?, ?> run) {
-            return getRoot() + Util.encode(run.getUrl());
+            return super.getRunURL(run) + DISPLAY_POSTFIX;
         }
 
         @Override
         public String getChangesURL(Run<?, ?> run) {
-            return getJobURL(run.getParent()) + "changes";
+            return super.getRunURL(run) + DISPLAY_POSTFIX + "?page=changes";
         }
 
         @Override
-        public String getJobURL(Job<?, ?> project) {
-            return getRoot() + Util.encode(project.getUrl());
+        public String getJobURL(Job<?, ?> job) {
+            return super.getJobURL(job) + DISPLAY_POSTFIX;
         }
 
         @Override
         public String getTestUrl(hudson.tasks.test.TestResult result) {
-            String buildUrl = getRunURL(result.getRun());
-            AbstractTestResultAction action = result.getTestResultAction();
-
-            TestObject parent = result.getParent();
-            TestResult testResultRoot = null;
-            while(parent != null) {
-                if (parent instanceof TestResult) {
-                    testResultRoot = (TestResult) parent;
-                    break;
-                }
-                parent = parent.getParent();
-            }
-
-            String testUrl = action.getUrlName()
-                    + (testResultRoot != null ? testResultRoot.getUrl() : "")
-                    + result.getUrl();
-
-            String[] pathComponents = testUrl.split("/");
-            StringBuilder buf = new StringBuilder();
-            for (String c : pathComponents) {
-                buf.append(Util.rawEncode(c)).append('/');
-            }
-            // remove last /
-            buf.deleteCharAt(buf.length() - 1);
-
-            return buildUrl + buf.toString();
+            Run<?, ?> run = result.getRun();
+            return super.getRunURL(run) + DISPLAY_POSTFIX + "?page=test&id=" + Util.rawEncode(result.getId());
         }
+    }
+
+    private static Jenkins getJenkins() {
+        Jenkins jenkins = Jenkins.getInstance();
+        if (jenkins == null) {
+            throw new IllegalStateException("Jenkins has not started");
+        }
+        return jenkins;
     }
 }
