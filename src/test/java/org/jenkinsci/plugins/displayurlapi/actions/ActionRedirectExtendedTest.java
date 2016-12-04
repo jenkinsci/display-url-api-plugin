@@ -6,7 +6,6 @@ import hudson.model.Job;
 import hudson.model.Run;
 import hudson.tasks.test.AbstractTestResultAction;
 import hudson.tasks.test.TestResult;
-import org.jenkinsci.plugins.displayurlapi.ClassicDisplayURLProvider;
 import org.jenkinsci.plugins.displayurlapi.DisplayURLProvider;
 import org.junit.Test;
 import org.jvnet.hudson.test.TestExtension;
@@ -83,28 +82,24 @@ public class ActionRedirectExtendedTest extends AbstractActionRedirectTest {
 
         public static final String EXTRA_CONTENT_IN_URL = "another";
 
-        DisplayURLProvider getClassicProvider() {
-            return Iterables.find(DisplayURLProvider.all(), Predicates.instanceOf(ClassicDisplayURLProvider.class));
-        }
-
         @Override
         public String getRunURL(Run<?, ?> run) {
-            return getClassicProvider().getRunURL(run) + EXTRA_CONTENT_IN_URL;
+            return DisplayURLProvider.getDefault().getRunURL(run) + EXTRA_CONTENT_IN_URL;
         }
 
         @Override
         public String getChangesURL(Run<?, ?> run) {
-            return getClassicProvider().getChangesURL(run) + EXTRA_CONTENT_IN_URL;
+            return DisplayURLProvider.getDefault().getChangesURL(run) + EXTRA_CONTENT_IN_URL;
         }
 
         @Override
         public String getJobURL(Job<?, ?> project) {
-            return getClassicProvider().getJobURL(project) + EXTRA_CONTENT_IN_URL;
+            return DisplayURLProvider.getDefault().getJobURL(project) + EXTRA_CONTENT_IN_URL;
         }
 
         @Override
         public String getTestUrl(hudson.tasks.test.TestResult result) {
-            return getClassicProvider().getTestUrl(result) + EXTRA_CONTENT_IN_URL;
+            return DisplayURLProvider.getDefault().getTestUrl(result) + EXTRA_CONTENT_IN_URL;
         }
     }
 }

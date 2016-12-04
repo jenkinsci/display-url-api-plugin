@@ -13,6 +13,12 @@ import hudson.tasks.test.TestObject;
  */
 @Extension
 public class ClassicDisplayURLProvider extends DisplayURLProvider {
+
+    @Override
+    public String getDisplayName() {
+        return "Jenkins Classic";
+    }
+
     @Override
     public String getRunURL(Run<?, ?> run) {
         return getRoot() + Util.encode(run.getUrl());
