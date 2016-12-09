@@ -16,7 +16,7 @@ public class ClassicDisplayURLProvider extends DisplayURLProvider {
 
     @Override
     public String getDisplayName() {
-        return "Jenkins Classic";
+        return Messages.classic_name();
     }
 
     @Override

@@ -3,6 +3,7 @@ package org.jenkinsci.plugins.displayurlapi.user;
 import hudson.model.User;
 import hudson.model.UserProperty;
 import hudson.model.UserPropertyDescriptor;
+import org.jenkinsci.plugins.displayurlapi.Messages;
 import org.jenkinsci.plugins.displayurlapi.user.PreferredProviderUserProperty.ProviderOption;
 
 public class PreferredProviderUserPropertyDescriptor extends UserPropertyDescriptor {
@@ -18,6 +19,6 @@ public class PreferredProviderUserPropertyDescriptor extends UserPropertyDescrip
 
     @Override
     public String getDisplayName() {
-        return "Preferred UI";
+        return Messages.display_url();
     }
 }
