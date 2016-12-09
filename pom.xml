@@ -9,7 +9,7 @@
     <relativePath />
   </parent>
   <artifactId>display-url-api</artifactId>
-  <version>1.0-beta-2-SNAPSHOT</version>
+  <version>0.6-SNAPSHOT</version>
   <packaging>hpi</packaging>
 
   <properties>
