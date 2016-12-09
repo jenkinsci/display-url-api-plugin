@@ -1,5 +1,7 @@
 package org.jenkinsci.plugins.displayurlapi;
 
+import com.google.common.base.Predicates;
+import com.google.common.collect.Iterables;
 import hudson.ExtensionPoint;
 import hudson.Util;
 import hudson.model.Job;
@@ -24,6 +26,10 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
         return getJenkins().getExtensionList(DisplayURLProvider.class);
     }
 
+    public static DisplayURLProvider getDefault() {
+        return Iterables.find(all(), Predicates.instanceOf(ClassicDisplayURLProvider.class));
+    }
+
     /** Fully qualified URL for the Root display URL */
     public String getRoot() {
         String root = getJenkins().getRootUrl();
@@ -31,6 +37,11 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
             root = "http://unconfigured-jenkins-location/";
         }
         return Util.encode(root);
+    }
+
+    /** Display name of this provider e.g. "Jenkins Classic", "Blue Ocean", etc */
+    public String getDisplayName() {
+        return this.getClass().getSimpleName();
     }
 
     /** Fully qualified URL for a Run */
