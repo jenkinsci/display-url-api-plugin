@@ -1,5 +1,6 @@
 package org.jenkinsci.plugins.displayurlapi;
 
+import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
 import hudson.ExtensionPoint;
@@ -7,7 +8,10 @@ import hudson.Util;
 import hudson.model.Job;
 import hudson.model.Run;
 import jenkins.model.Jenkins;
+import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.plugins.displayurlapi.actions.AbstractDisplayAction;
+
+import static org.apache.commons.lang.StringUtils.isNotEmpty;
 
 /**
  * Generates URLs for well known UI locations for use in notifications (e.g. mailer, HipChat, Slack, IRC, etc)
@@ -27,7 +31,20 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
     }
 
     public static DisplayURLProvider getDefault() {
-        return Iterables.find(all(), Predicates.instanceOf(ClassicDisplayURLProvider.class));
+        DisplayURLProvider defaultProvider = Iterables.find(all(), Predicates.instanceOf(ClassicDisplayURLProvider.class));
+
+        // Get the default provider from environment variable or system property
+        final String clazz = findClass();
+        if (isNotEmpty(clazz)) {
+            defaultProvider = Iterables.find(DisplayURLProvider.all(), new Predicate<DisplayURLProvider>() {
+                @Override
+                public boolean apply(DisplayURLProvider input) {
+                    return input.getClass().getName().equals(clazz);
+                }
+            });
+        }
+
+        return defaultProvider;
     }
 
     /** Fully qualified URL for the Root display URL */
@@ -84,6 +101,14 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
         }
     }
 
+    private static String findClass() {
+        String clazz = System.getenv(JENKINS_DISPLAYURL_PROVIDER_ENV);
+        if (StringUtils.isEmpty(clazz)) {
+            clazz = System.getProperty(JENKINS_DISPLAYURL_PROVIDER_PROP);
+        }
+        return clazz;
+    }
+
     private static Jenkins getJenkins() {
         Jenkins jenkins = Jenkins.getInstance();
         if (jenkins == null) {
@@ -91,4 +116,7 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
         }
         return jenkins;
     }
+
+    private static final String JENKINS_DISPLAYURL_PROVIDER_ENV = "JENKINS_DISPLAYURL_PROVIDER";
+    private static final String JENKINS_DISPLAYURL_PROVIDER_PROP = "jenkins.displayurl.provider";
 }
