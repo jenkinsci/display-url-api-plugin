@@ -39,7 +39,7 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
             defaultProvider = Iterables.find(DisplayURLProvider.all(), new Predicate<DisplayURLProvider>() {
                 @Override
                 public boolean apply(DisplayURLProvider input) {
-                    return input.getClass().getName().equals(clazz);
+                    return input != null && input.getClass().getName().equals(clazz);
                 }
             });
         }
