@@ -1,5 +1,6 @@
 package org.jenkinsci.plugins.displayurlapi;
 
+import hudson.EnvVars;
 import hudson.model.FreeStyleProject;
 import hudson.model.Run;
 import hudson.tasks.test.AbstractTestResultAction;
@@ -30,6 +31,11 @@ public class DisplayURLProviderTest {
         assertEquals(root + "job/my%20folder/job/my%20job/1/display/redirect", DisplayURLProvider.get().getRunURL(run));
         assertEquals(root + "job/my%20folder/job/my%20job/display/redirect", DisplayURLProvider.get().getJobURL(project));
         assertEquals(root + "job/my%20folder/job/my%20job/1/display/redirect?page=changes", DisplayURLProvider.get().getChangesURL(run));
+
+        EnvVars environment = run.getEnvironment();
+        assertEquals(DisplayURLProvider.get().getRunURL(run), environment.get("RUN_DISPLAY_URL"));
+        assertEquals(DisplayURLProvider.get().getChangesURL(run), environment.get("RUN_CHANGES_DISPLAY_URL"));
+        assertEquals(DisplayURLProvider.get().getJobURL(project), environment.get("JOB_DISPLAY_URL"));
     }
 
     @Test
