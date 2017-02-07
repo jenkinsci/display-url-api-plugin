@@ -73,6 +73,11 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
     /** Fully qualified URL to the test details page for a given test result */
     public abstract String getTestUrl(hudson.tasks.test.TestResult result);
 
+    /** Fully qualified URL to the test details page for a given test result. Alternate name for consistency. See JENKINS-41802. */
+    public String getTestURL(hudson.tasks.test.TestResult result) {
+        return getTestUrl(result);
+    }
+
     static class DisplayURLProviderImpl extends ClassicDisplayURLProvider {
 
         public static final DisplayURLProvider INSTANCE = new DisplayURLProviderImpl();
