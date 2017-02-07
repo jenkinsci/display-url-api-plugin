@@ -23,7 +23,7 @@ public class DisplayURLProviderTest {
     @Test
     public void urls() throws Exception {
         MockFolder folder = rule.createFolder("my folder");
-        FreeStyleProject project = (FreeStyleProject) folder.createProject(FreeStyleProject.DESCRIPTOR, "my job", false);
+        FreeStyleProject project = (FreeStyleProject) folder.createProject(rule.jenkins.getDescriptorByType(FreeStyleProject.DescriptorImpl.class), "my job", false);
         Run<?, ?> run = project.scheduleBuild2(0).get();
 
         String root = DisplayURLProvider.get().getRoot();
@@ -42,7 +42,7 @@ public class DisplayURLProviderTest {
     public void testGetTestURL() throws Exception {
 
         MockFolder folder = rule.createFolder("my folder");
-        FreeStyleProject project = (FreeStyleProject) folder.createProject(FreeStyleProject.DESCRIPTOR, "my job", false);
+        FreeStyleProject project = (FreeStyleProject) folder.createProject(rule.jenkins.getDescriptorByType(FreeStyleProject.DescriptorImpl.class), "my job", false);
         Run<?, ?> run = project.scheduleBuild2(0).get();
         MockTestResult result = new MockTestResult(run);
 

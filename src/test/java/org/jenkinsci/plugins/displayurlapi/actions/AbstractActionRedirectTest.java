@@ -20,7 +20,7 @@ public abstract class AbstractActionRedirectTest {
     @Before
     public void createJobAndRun() throws Exception {
         MockFolder folder = rule.createFolder("my folder");
-        FreeStyleProject job = (FreeStyleProject) folder.createProject(FreeStyleProject.DESCRIPTOR, "my job", false);
+        FreeStyleProject job = (FreeStyleProject) folder.createProject(rule.jenkins.getDescriptorByType(FreeStyleProject.DescriptorImpl.class), "my job", false);
         this.job = job;
         this.run = job.scheduleBuild2(0).get();
         provider = DisplayURLProvider.get();
