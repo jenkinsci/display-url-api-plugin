@@ -41,8 +41,13 @@ public abstract class AbstractDisplayAction implements Action {
     protected abstract String getRedirectURL(DisplayURLProvider provider);
 
     DisplayURLProvider lookupProvider() {
-        User user = User.current();
-        DisplayURLProvider provider = (user == null) ? null : user.getProperty(PreferredProviderUserProperty.class).getConfiguredProvider();
+        DisplayURLProvider provider = null;
+
+        PreferredProviderUserProperty prefProperty = getUserPreferredProviderProperty();
+        if (prefProperty != null) {
+            provider = prefProperty.getConfiguredProvider();
+        }
+
         if (provider == null) {
             Iterable<DisplayURLProvider> all = DisplayURLProvider.all();
             Iterable<DisplayURLProvider> availableProviders = Iterables.filter(all, Predicates.not(Predicates.instanceOf(ClassicDisplayURLProvider.class)));
@@ -50,4 +55,11 @@ public abstract class AbstractDisplayAction implements Action {
         }
         return provider;
     }
+
+    // not private for testability
+    protected PreferredProviderUserProperty getUserPreferredProviderProperty() {
+        User user = User.current();
+        return (user == null) ? null : user.getProperty(PreferredProviderUserProperty.class);
+    }
+
 }
