@@ -1,5 +1,6 @@
 package org.jenkinsci.plugins.displayurlapi.actions;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
 import hudson.model.Action;
@@ -41,13 +42,22 @@ public abstract class AbstractDisplayAction implements Action {
     protected abstract String getRedirectURL(DisplayURLProvider provider);
 
     DisplayURLProvider lookupProvider() {
-        User user = User.current();
-        DisplayURLProvider provider = (user == null) ? null : user.getProperty(PreferredProviderUserProperty.class).getConfiguredProvider();
-        if (provider == null) {
+        PreferredProviderUserProperty prefProperty = getUserPreferredProviderProperty();
+
+        if (prefProperty != null && prefProperty.getConfiguredProvider() != null) {
+            return prefProperty.getConfiguredProvider();
+        } else {
             Iterable<DisplayURLProvider> all = DisplayURLProvider.all();
             Iterable<DisplayURLProvider> availableProviders = Iterables.filter(all, Predicates.not(Predicates.instanceOf(ClassicDisplayURLProvider.class)));
-            provider = Iterables.getFirst(availableProviders, DisplayURLProvider.getDefault());
+
+            return Iterables.getFirst(availableProviders, DisplayURLProvider.getDefault());
         }
-        return provider;
     }
+
+    @VisibleForTesting
+    protected PreferredProviderUserProperty getUserPreferredProviderProperty() {
+        User user = User.current();
+        return (user == null) ? null : user.getProperty(PreferredProviderUserProperty.class);
+    }
+
 }

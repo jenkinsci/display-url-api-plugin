@@ -3,6 +3,7 @@ package org.jenkinsci.plugins.displayurlapi;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.ExtensionPoint;
 import hudson.Util;
 import hudson.model.Job;
@@ -100,6 +101,7 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
         }
 
         @Override
+        @SuppressFBWarnings(value = "NM_VERY_CONFUSING", justification = "getTestURL was introduced for consistency")
         public String getTestUrl(hudson.tasks.test.TestResult result) {
             Run<?, ?> run = result.getRun();
             return super.getRunURL(run) + DISPLAY_POSTFIX + "?page=test&id=" + Util.rawEncode(result.getId());

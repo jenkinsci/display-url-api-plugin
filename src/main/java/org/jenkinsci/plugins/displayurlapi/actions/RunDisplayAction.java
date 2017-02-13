@@ -17,7 +17,7 @@ import java.util.Collection;
 public class RunDisplayAction extends AbstractDisplayAction {
     private final Run run;
 
-    RunDisplayAction(Run run) {
+    protected RunDisplayAction(Run run) {
         this.run = run;
     }
 
