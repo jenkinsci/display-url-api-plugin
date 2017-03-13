@@ -2,7 +2,9 @@ pipeline {
   agent { docker 'maven:3.3-jdk-7' }
   stages {
     stage('build') {
-      sh 'mvn clean install -Duser.home=/var/maven'
+      steps {
+        sh 'mvn clean install -Duser.home=/var/maven'
+      }
     }
   }
   post {
