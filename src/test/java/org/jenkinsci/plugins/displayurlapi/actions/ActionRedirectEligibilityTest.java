@@ -104,11 +104,6 @@ public class ActionRedirectEligibilityTest extends AbstractActionRedirectTest {
         public String getJobURL(Job<?, ?> project) {
             return ELIGIBLE_IN_URL;
         }
-
-        @Override
-        public String getTestUrl(hudson.tasks.test.TestResult result) {
-            return ELIGIBLE_IN_URL;
-        }
     }
 
     @TestExtension

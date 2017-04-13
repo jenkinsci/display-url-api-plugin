@@ -4,8 +4,6 @@ import com.google.common.collect.ImmutableList;
 import hudson.Extension;
 import hudson.model.Action;
 import hudson.model.Run;
-import hudson.tasks.test.AbstractTestResultAction;
-import hudson.tasks.test.TestResult;
 import jenkins.model.TransientActionFactory;
 import org.jenkinsci.plugins.displayurlapi.DisplayURLProvider;
 import org.kohsuke.stapler.Stapler;
@@ -28,17 +26,6 @@ public class RunDisplayAction extends AbstractDisplayAction {
         String url;
         if ("changes".equals(page)) {
             url = provider.getChangesURL(run);
-        } else if ("test".equals(page)) {
-            String id = req.getParameter("id");
-            if (id == null) {
-                throw new IllegalArgumentException("id parameter not specified");
-            }
-            AbstractTestResultAction action = run.getAction(AbstractTestResultAction.class);
-            if (action == null) {
-                throw new IllegalStateException("No AbstractTestResultAction on this run");
-            }
-            TestResult result = action.findCorrespondingResult(id);
-            url = provider.getTestUrl(result);
         } else {
             url = provider.getRunURL(run);
         }
