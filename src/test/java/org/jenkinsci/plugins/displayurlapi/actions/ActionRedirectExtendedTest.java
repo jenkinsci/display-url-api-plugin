@@ -4,8 +4,6 @@ import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
 import hudson.model.Job;
 import hudson.model.Run;
-import hudson.tasks.test.AbstractTestResultAction;
-import hudson.tasks.test.TestResult;
 import org.jenkinsci.plugins.displayurlapi.DisplayURLProvider;
 import org.junit.Test;
 import org.jvnet.hudson.test.TestExtension;
@@ -14,8 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class ActionRedirectExtendedTest extends AbstractActionRedirectTest {
     @Test
@@ -57,20 +53,6 @@ public class ActionRedirectExtendedTest extends AbstractActionRedirectTest {
         assertEquals(root + "job/my%20folder/job/my%20job/changesanother", getRedirectedProvider().getChangesURL(run));
     }
 
-    @Test
-    public void testGetTestUrl() throws Exception {
-        TestResult result = mock(TestResult.class);
-
-        AbstractTestResultAction action = mock(AbstractTestResultAction.class);
-        when(action.getUrlName()).thenReturn("action");
-
-        when(result.getRun()).thenReturn((Run)run);
-        when(result.getTestResultAction()).thenReturn(action);
-        when(result.getUrl()).thenReturn("/some id with spaces");
-
-        String testUrl = getRedirectedProvider().getTestUrl(result);
-        assertEquals("http://localhost:" + rule.getLocalPort() + "/jenkins/job/my%20folder/job/my%20job/1/action/some%20id%20with%20spacesanother", testUrl);
-    }
 
     @Override
     protected DisplayURLProvider getRedirectedProvider() {
@@ -95,11 +77,6 @@ public class ActionRedirectExtendedTest extends AbstractActionRedirectTest {
         @Override
         public String getJobURL(Job<?, ?> project) {
             return DisplayURLProvider.getDefault().getJobURL(project) + EXTRA_CONTENT_IN_URL;
-        }
-
-        @Override
-        public String getTestUrl(hudson.tasks.test.TestResult result) {
-            return DisplayURLProvider.getDefault().getTestUrl(result) + EXTRA_CONTENT_IN_URL;
         }
     }
 }

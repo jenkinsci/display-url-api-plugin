@@ -3,7 +3,6 @@ package org.jenkinsci.plugins.displayurlapi;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.ExtensionPoint;
 import hudson.Util;
 import hudson.model.Job;
@@ -71,14 +70,6 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
     /** Fully qualified URL for a Jobs home */
     public abstract String getJobURL(Job<?, ?> job);
 
-    /** Fully qualified URL to the test details page for a given test result */
-    public abstract String getTestUrl(hudson.tasks.test.TestResult result);
-
-    /** Fully qualified URL to the test details page for a given test result. Alternate name for consistency. See JENKINS-41802. */
-    public String getTestURL(hudson.tasks.test.TestResult result) {
-        return getTestUrl(result);
-    }
-
     static class DisplayURLProviderImpl extends ClassicDisplayURLProvider {
 
         public static final DisplayURLProvider INSTANCE = new DisplayURLProviderImpl();
@@ -98,13 +89,6 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
         @Override
         public String getJobURL(Job<?, ?> job) {
             return super.getJobURL(job) + DISPLAY_POSTFIX;
-        }
-
-        @Override
-        @SuppressFBWarnings(value = "NM_VERY_CONFUSING", justification = "getTestURL was introduced for consistency")
-        public String getTestUrl(hudson.tasks.test.TestResult result) {
-            Run<?, ?> run = result.getRun();
-            return super.getRunURL(run) + DISPLAY_POSTFIX + "?page=test&id=" + Util.rawEncode(result.getId());
         }
     }
 
