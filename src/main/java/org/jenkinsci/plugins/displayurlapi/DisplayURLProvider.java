@@ -21,9 +21,25 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
 
     /**
      * @return DisplayURLProvider
+     * @deprecated use {@link #get(String)}
      */
     public static DisplayURLProvider get() {
         return DisplayURLProviderImpl.INSTANCE;
+    }
+
+    /**
+     * Returns a {@link DisplayURLProvider} that will apply the {@code utm_source=jenkins} and {@code utm_medium=}
+     * for the supplied parameter to all generated URLs.
+     * @param medium the {@code utm_medium}.
+     * @return the {@link DisplayURLProvider}.
+     * @see UTMDisplayURLProvider#withCampaign(String) to set the {@code utm_campaign}
+     * @see UTMDisplayURLProvider#withTerm(String) to set the {@code utm_term}
+     * @see UTMDisplayURLProvider#withContent(String) to set the {@code utm_content}
+     * @see UTMDisplayURLProvider#withSource(String) to set the {@code utm_source}
+     * @since 2.0
+     */
+    public static UTMDisplayURLProvider get(String medium) {
+        return new UTMDisplayURLProvider(get(), medium);
     }
 
     public static Iterable<DisplayURLProvider> all() {
