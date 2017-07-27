@@ -46,12 +46,14 @@ public abstract class AbstractDisplayAction implements Action {
 
         if (prefProperty != null && prefProperty.getConfiguredProvider() != null) {
             return prefProperty.getConfiguredProvider();
-        } else {
+        }
+        DisplayURLProvider displayURLProvider = DisplayURLProvider.getPreferredProvider();
+        if (displayURLProvider == null) {
             Iterable<DisplayURLProvider> all = DisplayURLProvider.all();
             Iterable<DisplayURLProvider> availableProviders = Iterables.filter(all, Predicates.not(Predicates.instanceOf(ClassicDisplayURLProvider.class)));
-
-            return Iterables.getFirst(availableProviders, DisplayURLProvider.getDefault());
+            displayURLProvider = Iterables.getFirst(availableProviders, DisplayURLProvider.getDefault());
         }
+        return displayURLProvider;
     }
 
     @VisibleForTesting
