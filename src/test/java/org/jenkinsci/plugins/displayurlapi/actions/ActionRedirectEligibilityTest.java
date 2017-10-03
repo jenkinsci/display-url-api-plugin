@@ -11,6 +11,7 @@ import org.hamcrest.Matchers;
 import org.jenkinsci.plugins.displayurlapi.ClassicDisplayURLProvider;
 import org.jenkinsci.plugins.displayurlapi.DisplayURLProvider;
 import org.jenkinsci.plugins.displayurlapi.user.PreferredProviderUserProperty;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 import org.jvnet.hudson.test.TestExtension;
@@ -24,6 +25,11 @@ import static io.restassured.RestAssured.given;
 public class ActionRedirectEligibilityTest extends AbstractActionRedirectTest {
 
     private static PreferredProviderUserProperty propToUse;
+
+    @After
+    public void tearDown() {
+        System.setProperty("jenkins.displayurl.provider", "");
+    }
 
     @Test
     public void testUserChooseImplementation() throws Exception {
@@ -74,6 +80,18 @@ public class ActionRedirectEligibilityTest extends AbstractActionRedirectTest {
 
         System.setProperty("jenkins.displayurl.provider", ClassicDisplayURLProvider.class.getName());
         Assert.assertThat(DisplayURLProvider.getDefault(), Matchers.instanceOf(ClassicDisplayURLProvider.class));
+    }
+
+    @Test
+    public void testUserDefaultImplementationForRedirection() throws Exception {
+        //set Classic provider
+        System.setProperty("jenkins.displayurl.provider", ClassicDisplayURLProvider.class.getName());
+        given()
+                .urlEncodingEnabled(false)
+                .redirects().follow(false)
+                .when().get(provider.getRunURL(run)).then()
+                .statusCode(HttpServletResponse.SC_MOVED_TEMPORARILY)
+                .header("Location", getRedirectedProvider().getRunURL(run));
     }
 
     @Override
