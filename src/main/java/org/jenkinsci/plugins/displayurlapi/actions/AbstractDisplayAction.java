@@ -1,6 +1,7 @@
 package org.jenkinsci.plugins.displayurlapi.actions;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
 import hudson.model.Action;
@@ -14,7 +15,6 @@ import org.kohsuke.stapler.StaplerResponse;
 import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.function.Predicate;
 
 public abstract class AbstractDisplayAction implements Action {
 
@@ -47,7 +47,7 @@ public abstract class AbstractDisplayAction implements Action {
         final String providerName = req.getParameter("provider");
         if(providerName != null && !providerName.isEmpty()) {
             Iterable<DisplayURLProvider> providers = DisplayURLProvider.all();
-            Iterable<DisplayURLProvider> filtered = Iterables.filter(providers, new com.google.common.base.Predicate<DisplayURLProvider>() {
+            Iterable<DisplayURLProvider> filtered = Iterables.filter(providers, new Predicate<DisplayURLProvider>() {
                 @Override
                 public boolean apply(@Nullable DisplayURLProvider displayURLProvider) {
                     if(displayURLProvider == null) {
