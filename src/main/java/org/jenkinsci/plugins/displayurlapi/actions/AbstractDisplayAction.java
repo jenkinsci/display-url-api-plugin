@@ -1,6 +1,7 @@
 package org.jenkinsci.plugins.displayurlapi.actions;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
 import hudson.model.Action;
@@ -11,6 +12,7 @@ import org.jenkinsci.plugins.displayurlapi.user.PreferredProviderUserProperty;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
+import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
@@ -34,13 +36,36 @@ public abstract class AbstractDisplayAction implements Action {
     }
 
     public final Object doRedirect(StaplerRequest req, StaplerResponse rsp) throws IOException {
-        DisplayURLProvider provider = lookupProvider();
+        DisplayURLProvider provider = lookupProvider(req);
         rsp.sendRedirect(HttpServletResponse.SC_MOVED_TEMPORARILY, getRedirectURL(provider));
         return null;
     }
 
     protected abstract String getRedirectURL(DisplayURLProvider provider);
 
+    DisplayURLProvider lookupProvider(StaplerRequest req) {
+        final String providerName = req.getParameter("provider");
+        if(providerName != null && !providerName.isEmpty()) {
+            Iterable<DisplayURLProvider> providers = DisplayURLProvider.all();
+            Iterable<DisplayURLProvider> filtered = Iterables.filter(providers, new Predicate<DisplayURLProvider>() {
+                @Override
+                public boolean apply(@Nullable DisplayURLProvider displayURLProvider) {
+                    if(displayURLProvider == null) {
+                        return false;
+                    }
+
+                    return displayURLProvider.getName().equals(providerName);
+                }
+            });
+
+            DisplayURLProvider provider = Iterables.getFirst(filtered, null);
+            if(provider != null) {
+                return provider;
+            }
+        }
+
+        return lookupProvider();
+    }
     DisplayURLProvider lookupProvider() {
         PreferredProviderUserProperty prefProperty = getUserPreferredProviderProperty();
 

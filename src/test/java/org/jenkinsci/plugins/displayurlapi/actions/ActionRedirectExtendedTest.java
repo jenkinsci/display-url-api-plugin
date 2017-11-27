@@ -45,6 +45,16 @@ public class ActionRedirectExtendedTest extends AbstractActionRedirectTest {
     }
 
     @Test
+    public void testRedirectForYetAnotherProviderParameter() throws Exception {
+        given()
+                .urlEncodingEnabled(false)
+                .redirects().follow(false)
+                .when().get(provider.getChangesURL(run) + "&provider=YetAnotherDisplayURLProvider").then()
+                .statusCode(HttpServletResponse.SC_MOVED_TEMPORARILY)
+                .header("Location", getYetAnotherRedirectedProvider().getChangesURL(run));
+    }
+
+    @Test
     public void testUrls() throws Exception {
         String root = DisplayURLProvider.get().getRoot();
         assertEquals("http://localhost:" + rule.getLocalPort() + "/jenkins/", root);
@@ -59,10 +69,35 @@ public class ActionRedirectExtendedTest extends AbstractActionRedirectTest {
         return Iterables.find(DisplayURLProvider.all(), Predicates.instanceOf(AnotherDisplayURLProvider.class));
     }
 
+    protected DisplayURLProvider getYetAnotherRedirectedProvider() {
+        return Iterables.find(DisplayURLProvider.all(), Predicates.instanceOf(YetAnotherDisplayURLProvider.class));
+    }
+
     @TestExtension
     public static class AnotherDisplayURLProvider extends DisplayURLProvider {
 
         public static final String EXTRA_CONTENT_IN_URL = "another";
+
+        @Override
+        public String getRunURL(Run<?, ?> run) {
+            return DisplayURLProvider.getDefault().getRunURL(run) + EXTRA_CONTENT_IN_URL;
+        }
+
+        @Override
+        public String getChangesURL(Run<?, ?> run) {
+            return DisplayURLProvider.getDefault().getChangesURL(run) + EXTRA_CONTENT_IN_URL;
+        }
+
+        @Override
+        public String getJobURL(Job<?, ?> project) {
+            return DisplayURLProvider.getDefault().getJobURL(project) + EXTRA_CONTENT_IN_URL;
+        }
+    }
+
+    @TestExtension
+    public static class YetAnotherDisplayURLProvider extends DisplayURLProvider {
+
+        public static final String EXTRA_CONTENT_IN_URL = "yetanother";
 
         @Override
         public String getRunURL(Run<?, ?> run) {
