@@ -53,6 +53,11 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
         return this.getClass().getSimpleName();
     }
 
+    /** Name of provider to be used as an id. Do not use i18n */
+    public String getName() {
+        return this.getClass().getSimpleName();
+    }
+
     /** Fully qualified URL for a Run */
     public abstract String getRunURL(Run<?, ?> run);
 

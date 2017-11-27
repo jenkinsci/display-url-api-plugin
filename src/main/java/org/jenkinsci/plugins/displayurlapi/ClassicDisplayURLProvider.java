@@ -17,6 +17,11 @@ public class ClassicDisplayURLProvider extends DisplayURLProvider {
     }
 
     @Override
+    public String getName() {
+        return "classic";
+    }
+
+    @Override
     public String getRunURL(Run<?, ?> run) {
         return getRoot() + Util.encode(run.getUrl());
     }
