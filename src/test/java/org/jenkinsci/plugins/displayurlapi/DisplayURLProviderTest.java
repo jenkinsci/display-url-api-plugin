@@ -28,7 +28,9 @@ public class DisplayURLProviderTest {
 
         EnvVars environment = run.getEnvironment();
         assertEquals(DisplayURLProvider.get().getRunURL(run), environment.get("RUN_DISPLAY_URL"));
+        assertEquals(DisplayURLProvider.get().getRunURL(run), environment.get("BUILD_URL"));
         assertEquals(DisplayURLProvider.get().getChangesURL(run), environment.get("RUN_CHANGES_DISPLAY_URL"));
         assertEquals(DisplayURLProvider.get().getJobURL(project), environment.get("JOB_DISPLAY_URL"));
+        assertEquals(DisplayURLProvider.get().getJobURL(project), environment.get("JOB_URL"));
     }
 }
