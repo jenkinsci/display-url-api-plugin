@@ -1,5 +1,6 @@
 package org.jenkinsci.plugins.displayurlapi;
 
+import edu.umd.cs.findbugs.annotations.Nullable;
 import hudson.ExtensionList;
 import hudson.ExtensionPoint;
 import hudson.Util;
@@ -8,9 +9,9 @@ import hudson.model.Run;
 import jenkins.model.Jenkins;
 import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.plugins.displayurlapi.actions.AbstractDisplayAction;
-
-
-import javax.annotation.Nullable;
+import org.jenkinsci.plugins.displayurlapi.user.PreferredProviderUserProperty;
+import org.kohsuke.accmod.Restricted;
+import org.kohsuke.accmod.restrictions.NoExternalUse;
 
 import static org.apache.commons.lang.StringUtils.isNotEmpty;
 
@@ -21,14 +22,21 @@ import static org.apache.commons.lang.StringUtils.isNotEmpty;
 public abstract class DisplayURLProvider implements ExtensionPoint {
 
     /**
+     * Returns the {@link DisplayURLProvider} to use for generating links to be given to users.
+     *
      * @return DisplayURLProvider
      */
     public static DisplayURLProvider get() {
         return DisplayURLProviderImpl.INSTANCE;
     }
 
+    /**
+     * Returns all the {@link DisplayURLProvider} implementations.
+     *
+     * @return all the {@link DisplayURLProvider} implementations.
+     */
     public static Iterable<DisplayURLProvider> all() {
-        return Jenkins.getActiveInstance().getExtensionList(DisplayURLProvider.class);
+        return ExtensionList.lookup(DisplayURLProvider.class);
     }
 
     public static DisplayURLProvider getDefault() {
@@ -39,7 +47,9 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
         return defaultProvider;
     }
 
-    /** Fully qualified URL for the Root display URL */
+    /**
+     * Fully qualified URL for the Root display URL
+     */
     public String getRoot() {
         String root = Jenkins.getActiveInstance().getRootUrl();
         if (root == null) {
@@ -48,7 +58,9 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
         return Util.encode(root);
     }
 
-    /** Display name of this provider e.g. "Jenkins Classic", "Blue Ocean", etc */
+    /**
+     * Display name of this provider e.g. "Jenkins Classic", "Blue Ocean", etc
+     */
     public String getDisplayName() {
         return this.getClass().getSimpleName();
     }
@@ -58,34 +70,71 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
         return this.getClass().getSimpleName();
     }
 
-    /** Fully qualified URL for a Run */
+    /**
+     * Fully qualified URL for a Run
+     */
     public abstract String getRunURL(Run<?, ?> run);
 
-    /** Fully qualified URL for a page that displays changes for a project. */
+    /**
+     * Fully qualified URL for a page that displays changes for a project.
+     */
     public abstract String getChangesURL(Run<?, ?> run);
 
-    /** Fully qualified URL for a Jobs home */
+    /**
+     * Fully qualified URL for a Jobs home
+     */
     public abstract String getJobURL(Job<?, ?> job);
 
+    /**
+     * Generates the URLs that the end user will click on, these URLs will direct to a {@link AbstractDisplayAction}
+     * which is then responsible for sending the user to their actual {@link DisplayURLProvider} URL.
+     */
     static class DisplayURLProviderImpl extends ClassicDisplayURLProvider {
 
-        public static final DisplayURLProvider INSTANCE = new DisplayURLProviderImpl();
+        static final DisplayURLProvider INSTANCE = new DisplayURLProviderImpl();
 
-        public static final String DISPLAY_POSTFIX = AbstractDisplayAction.URL_NAME + "/redirect";
+        static final String DISPLAY_POSTFIX = AbstractDisplayAction.URL_NAME + "/redirect";
 
         @Override
         public String getRunURL(Run<?, ?> run) {
-            return super.getRunURL(run) + DISPLAY_POSTFIX;
+            DisplayURLContext ctx = DisplayURLContext.open();
+            try {
+                if (ctx.run() == null) {
+                    // the link might be generated from another run so we only add this to the context if unset
+                    ctx.run(run);
+                }
+                return DisplayURLDecorator.decorate(ctx, super.getRunURL(run) + DISPLAY_POSTFIX);
+            } finally {
+                ctx.close();
+            }
         }
 
         @Override
         public String getChangesURL(Run<?, ?> run) {
-            return super.getRunURL(run) + DISPLAY_POSTFIX + "?page=changes";
+            DisplayURLContext ctx = DisplayURLContext.open();
+            try {
+                if (ctx.run() == null) {
+                    // the link might be generated from another run so we only add this to the context if unset
+                    ctx.run(run);
+                }
+                return DisplayURLDecorator.decorate(ctx, super.getRunURL(run) + DISPLAY_POSTFIX + "?page=changes");
+            } finally {
+                ctx.close();
+            }
         }
 
         @Override
         public String getJobURL(Job<?, ?> job) {
-            return super.getJobURL(job) + DISPLAY_POSTFIX;
+            DisplayURLContext ctx = DisplayURLContext.open();
+            try {
+                if (ctx.job() == null) {
+                    // the link might be generated from another job so we only add this to the context if unset
+                    ctx.job(job);
+                }
+                return DisplayURLDecorator.decorate(ctx, super.getJobURL(job) + DISPLAY_POSTFIX);
+            } finally {
+                ctx.close();
+            }
         }
     }
 
@@ -105,7 +154,6 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
         }
         return null;
     }
-
 
     private static final String JENKINS_DISPLAYURL_PROVIDER_ENV = "JENKINS_DISPLAYURL_PROVIDER";
     private static final String JENKINS_DISPLAYURL_PROVIDER_PROP = "jenkins.displayurl.provider";
