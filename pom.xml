@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.jenkins-ci.plugins</groupId>
     <artifactId>plugin</artifactId>
-    <version>2.11</version>
+    <version>3.28</version>
     <relativePath />
   </parent>
   <artifactId>display-url-api</artifactId>
@@ -83,5 +83,43 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <!-- TODO remove once core baseline is sufficiently new -->
+  <build>
+    <plugins>
+      <plugin>
+        <!-- do not copy this, we are in a special case where the target Jenkins is sufficiently old and
+             none of the dependencies we reference are bundled in the .hpi -->
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>display-info</id>
+            <configuration>
+              <rules>
+                <requireUpperBoundDeps>
+                  <excludes combine.children="append">
+                    <exclude>commons-codec:commons-codec</exclude>
+                    <exclude>org.apache.ant:ant</exclude>
+                    <exclude>org.eclipse.jetty:jetty-util</exclude>
+                    <exclude>org.eclipse.jetty:jetty-io</exclude>
+                    <exclude>org.codehaus.plexus:plexus-utils</exclude>
+                    <exclude>org.codehaus.plexus:plexus-classworlds</exclude>
+                  </excludes>
+                </requireUpperBoundDeps>
+                <enforceBytecodeVersion>
+                  <excludes combine.children="append">
+                    <exclude>org.kohsuke:access-modifier-annotation</exclude>
+                    <exclude>org.codehaus.mojo:animal-sniffer-annotations</exclude>
+                    <exclude>javax.servlet:javax.servlet-api</exclude>
+                  </excludes>
+                </enforceBytecodeVersion>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  <!--END remove once core baseline is sufficiently new-->
 
 </project>
