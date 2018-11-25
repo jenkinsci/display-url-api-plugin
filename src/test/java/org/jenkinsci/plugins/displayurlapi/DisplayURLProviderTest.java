@@ -30,10 +30,10 @@ public class DisplayURLProviderTest {
 
         String root = DisplayURLProvider.get().getRoot();
         assertEquals("http://localhost:" + rule.getLocalPort() + "/jenkins/", root);
-        assertEquals(root + "job/my%20folder/job/my%20job/1/display/redirect", DisplayURLProvider.get().getRunURL(run));
-        assertEquals(root + "job/my%20folder/job/my%20job/display/redirect",
+        assertEquals(root + "job/my%20folder/job/my%20job/1/display/", DisplayURLProvider.get().getRunURL(run));
+        assertEquals(root + "job/my%20folder/job/my%20job/display/",
                 DisplayURLProvider.get().getJobURL(project));
-        assertEquals(root + "job/my%20folder/job/my%20job/1/display/redirect?page=changes",
+        assertEquals(root + "job/my%20folder/job/my%20job/1/display/?page=changes",
                 DisplayURLProvider.get().getChangesURL(run));
 
         EnvVars environment = run.getEnvironment();
@@ -52,11 +52,11 @@ public class DisplayURLProviderTest {
 
         String root = DisplayURLProvider.get().getRoot();
         assertEquals("http://localhost:" + rule.getLocalPort() + "/jenkins/", root);
-        assertEquals(root + "job/my%20folder/job/my%20job/1/display/redirect?utm_campaign=jenkins&utm_source=Jenkins"
+        assertEquals(root + "job/my%20folder/job/my%20job/1/display/?utm_campaign=jenkins&utm_source=Jenkins"
                 + "&utm_term=my+folder%2Fmy+job%231", DisplayURLProvider.get().getRunURL(run));
-        assertEquals(root + "job/my%20folder/job/my%20job/display/redirect?utm_campaign=jenkins&utm_source=Jenkins",
+        assertEquals(root + "job/my%20folder/job/my%20job/display/?utm_campaign=jenkins&utm_source=Jenkins",
                 DisplayURLProvider.get().getJobURL(project));
-        assertEquals(root + "job/my%20folder/job/my%20job/1/display/redirect?page=changes&utm_campaign=jenkins"
+        assertEquals(root + "job/my%20folder/job/my%20job/1/display/?page=changes&utm_campaign=jenkins"
                         + "&utm_source=Jenkins&utm_term=my+folder%2Fmy+job%231",
                 DisplayURLProvider.get().getChangesURL(run));
         DisplayURLContext ctx = DisplayURLContext.open();
@@ -64,13 +64,13 @@ public class DisplayURLProviderTest {
             ctx.plugin(Jenkins.getActiveInstance().getPluginManager().getPlugin("display-url-api"));
             assertEquals(
                     root
-                            + "job/my%20folder/job/my%20job/1/display/redirect?utm_campaign=display-url-api"
+                            + "job/my%20folder/job/my%20job/1/display/?utm_campaign=display-url-api"
                             + "&utm_source=Jenkins&utm_term=my+folder%2Fmy+job%231", DisplayURLProvider.get().getRunURL(run));
             assertEquals(root
-                            + "job/my%20folder/job/my%20job/display/redirect?utm_campaign=display-url-api&utm_source"
+                            + "job/my%20folder/job/my%20job/display/?utm_campaign=display-url-api&utm_source"
                             + "=Jenkins",
                     DisplayURLProvider.get().getJobURL(project));
-            assertEquals(root + "job/my%20folder/job/my%20job/1/display/redirect?page=changes&utm_campaign=display"
+            assertEquals(root + "job/my%20folder/job/my%20job/1/display/?page=changes&utm_campaign=display"
                             + "-url-api&utm_source=Jenkins&utm_term=my+folder%2Fmy+job%231",
                     DisplayURLProvider.get().getChangesURL(run));
         } finally {

@@ -93,7 +93,8 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
 
         static final DisplayURLProvider INSTANCE = new DisplayURLProviderImpl();
 
-        static final String DISPLAY_POSTFIX = AbstractDisplayAction.URL_NAME + "/redirect";
+        // Need trailing slash to prevent one redirect from display -> display/
+        static final String DISPLAY_POSTFIX = AbstractDisplayAction.URL_NAME + "/";
 
         @Override
         public String getRunURL(Run<?, ?> run) {

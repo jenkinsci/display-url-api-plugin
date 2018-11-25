@@ -35,10 +35,9 @@ public abstract class AbstractDisplayAction implements Action {
         return URL_NAME;
     }
 
-    public final Object doRedirect(StaplerRequest req, StaplerResponse rsp) throws IOException {
+    public final void doDynamic(StaplerRequest req, StaplerResponse rsp) throws IOException {
         DisplayURLProvider provider = lookupProvider(req);
         rsp.sendRedirect(HttpServletResponse.SC_MOVED_TEMPORARILY, getRedirectURL(provider));
-        return null;
     }
 
     protected abstract String getRedirectURL(DisplayURLProvider provider);
