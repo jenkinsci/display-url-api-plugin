@@ -36,7 +36,7 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
      *
      * @return all the {@link DisplayURLProvider} implementations.
      */
-    public static Iterable<DisplayURLProvider> all() {
+    public static ExtensionList<DisplayURLProvider> all() {
         return ExtensionList.lookup(DisplayURLProvider.class);
     }
 

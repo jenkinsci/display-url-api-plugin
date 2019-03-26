@@ -1,7 +1,5 @@
 package org.jenkinsci.plugins.displayurlapi.user;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -9,6 +7,8 @@ import edu.umd.cs.findbugs.annotations.Nullable;
 import hudson.Extension;
 import hudson.model.UserProperty;
 import hudson.model.UserPropertyDescriptor;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.jenkinsci.plugins.displayurlapi.DisplayURLProvider;
 import org.kohsuke.stapler.DataBoundConstructor;
 
@@ -33,22 +33,18 @@ public class PreferredProviderUserProperty extends UserProperty {
     }
 
     public DisplayURLProvider getConfiguredProvider() {
-        return Iterables.find(DisplayURLProvider.all(), new Predicate<DisplayURLProvider>() {
-            @Override
-            public boolean apply(DisplayURLProvider input) {
-                return input.getClass().getName().equals(providerId);
-            }
-        }, null);
+        return DisplayURLProvider.all().stream()
+            .filter(input -> input.getClass().getName().equals(providerId))
+            .findFirst()
+            .orElse(null);
     }
 
     public List<ProviderOption> getAll() {
-        Iterable<ProviderOption> options = Iterables.transform(DisplayURLProvider.all(), new Function<DisplayURLProvider, ProviderOption>() {
-            @Override
-            public ProviderOption apply(DisplayURLProvider input) {
-                return new ProviderOption(input.getClass().getName(), input.getDisplayName());
-            }
-        });
-        return ImmutableList.copyOf(Iterables.concat(Lists.newArrayList(ProviderOption.DEFAULT_OPTION), options));
+        Stream<ProviderOption> defaultOption = Stream.of(ProviderOption.DEFAULT_OPTION);
+        Stream<ProviderOption> options = DisplayURLProvider.all().stream()
+            .map(input -> new ProviderOption(input.getClass().getName(), input.getDisplayName()));
+        Stream<ProviderOption> combined = Stream.concat(defaultOption, options);
+        return ImmutableList.copyOf(combined.collect(Collectors.toList()));
     }
 
     public boolean isSelected(String providerId) {
