@@ -53,7 +53,7 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
      */
     @NonNull
     public String getRoot() {
-        String root = Jenkins.getActiveInstance().getRootUrl();
+        String root = Jenkins.getInstance().getRootUrl();
         if (root == null) {
             root = "http://unconfigured-jenkins-location/";
         }
