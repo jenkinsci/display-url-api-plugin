@@ -4,6 +4,7 @@ import com.google.common.annotations.VisibleForTesting;
 import hudson.ExtensionList;
 import hudson.model.Action;
 import hudson.model.User;
+import java.util.Objects;
 import java.util.function.Predicate;
 import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.plugins.displayurlapi.ClassicDisplayURLProvider;
@@ -47,6 +48,7 @@ public abstract class AbstractDisplayAction implements Action {
         if(StringUtils.isNotEmpty(providerName)) {
             ExtensionList<DisplayURLProvider> providers = DisplayURLProvider.all();
             DisplayURLProvider provider = providers.stream()
+                .filter(Objects::nonNull)
                 .filter(displayURLProvider -> providerName.equals(displayURLProvider.getName()))
                 .findFirst()
                 .orElse(null);
