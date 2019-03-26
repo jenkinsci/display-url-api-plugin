@@ -10,9 +10,6 @@ import hudson.model.Run;
 import jenkins.model.Jenkins;
 import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.plugins.displayurlapi.actions.AbstractDisplayAction;
-import org.jenkinsci.plugins.displayurlapi.user.PreferredProviderUserProperty;
-import org.kohsuke.accmod.Restricted;
-import org.kohsuke.accmod.restrictions.NoExternalUse;
 
 import static org.apache.commons.lang.StringUtils.isNotEmpty;
 

@@ -1,8 +1,6 @@
 package org.jenkinsci.plugins.displayurlapi.user;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import hudson.Extension;
 import hudson.model.UserProperty;
