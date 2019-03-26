@@ -1,5 +1,6 @@
 package org.jenkinsci.plugins.displayurlapi;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import hudson.ExtensionList;
 import hudson.ExtensionPoint;
@@ -50,6 +51,7 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
     /**
      * Fully qualified URL for the Root display URL
      */
+    @NonNull
     public String getRoot() {
         String root = Jenkins.getActiveInstance().getRootUrl();
         if (root == null) {
@@ -61,11 +63,13 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
     /**
      * Display name of this provider e.g. "Jenkins Classic", "Blue Ocean", etc
      */
+    @NonNull
     public String getDisplayName() {
         return this.getClass().getSimpleName();
     }
 
     /** Name of provider to be used as an id. Do not use i18n */
+    @NonNull
     public String getName() {
         return this.getClass().getSimpleName();
     }
@@ -73,16 +77,19 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
     /**
      * Fully qualified URL for a Run
      */
+    @NonNull
     public abstract String getRunURL(Run<?, ?> run);
 
     /**
      * Fully qualified URL for a page that displays changes for a project.
      */
+    @NonNull
     public abstract String getChangesURL(Run<?, ?> run);
 
     /**
      * Fully qualified URL for a Jobs home
      */
+    @NonNull
     public abstract String getJobURL(Job<?, ?> job);
 
     /**
@@ -96,6 +103,7 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
         static final String DISPLAY_POSTFIX = AbstractDisplayAction.URL_NAME + "/redirect";
 
         @Override
+        @NonNull
         public String getRunURL(Run<?, ?> run) {
             DisplayURLContext ctx = DisplayURLContext.open();
             try {
@@ -110,6 +118,7 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
         }
 
         @Override
+        @NonNull
         public String getChangesURL(Run<?, ?> run) {
             DisplayURLContext ctx = DisplayURLContext.open();
             try {
@@ -124,6 +133,7 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
         }
 
         @Override
+        @NonNull
         public String getJobURL(Job<?, ?> job) {
             DisplayURLContext ctx = DisplayURLContext.open();
             try {
