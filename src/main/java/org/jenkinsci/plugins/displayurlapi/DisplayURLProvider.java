@@ -106,46 +106,37 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
         @Override
         @NonNull
         public String getRunURL(Run<?, ?> run) {
-            DisplayURLContext ctx = DisplayURLContext.open();
-            try {
+            try (DisplayURLContext ctx = DisplayURLContext.open()) {
                 if (ctx.run() == null) {
                     // the link might be generated from another run so we only add this to the context if unset
                     ctx.run(run);
                 }
                 return DisplayURLDecorator.decorate(ctx, super.getRunURL(run) + DISPLAY_POSTFIX);
-            } finally {
-                ctx.close();
             }
         }
 
         @Override
         @NonNull
         public String getChangesURL(Run<?, ?> run) {
-            DisplayURLContext ctx = DisplayURLContext.open();
-            try {
+            try (DisplayURLContext ctx = DisplayURLContext.open()) {
                 if (ctx.run() == null) {
                     // the link might be generated from another run so we only add this to the context if unset
                     ctx.run(run);
                 }
                 return DisplayURLDecorator
                     .decorate(ctx, super.getRunURL(run) + DISPLAY_POSTFIX + "?page=changes");
-            } finally {
-                ctx.close();
             }
         }
 
         @Override
         @NonNull
         public String getJobURL(Job<?, ?> job) {
-            DisplayURLContext ctx = DisplayURLContext.open();
-            try {
+            try (DisplayURLContext ctx = DisplayURLContext.open()) {
                 if (ctx.job() == null) {
                     // the link might be generated from another job so we only add this to the context if unset
                     ctx.job(job);
                 }
                 return DisplayURLDecorator.decorate(ctx, super.getJobURL(job) + DISPLAY_POSTFIX);
-            } finally {
-                ctx.close();
             }
         }
     }
