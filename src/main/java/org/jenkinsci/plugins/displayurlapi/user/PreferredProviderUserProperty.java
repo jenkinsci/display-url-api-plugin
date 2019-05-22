@@ -38,11 +38,11 @@ public class PreferredProviderUserProperty extends UserProperty {
     }
 
     public List<ProviderOption> getAll() {
-        Stream<ProviderOption> defaultOption = Stream.of(ProviderOption.DEFAULT_OPTION);
-        Stream<ProviderOption> options = DisplayURLProvider.all().stream()
-            .map(input -> new ProviderOption(input.getClass().getName(), input.getDisplayName()));
-        Stream<ProviderOption> combined = Stream.concat(defaultOption, options);
-        return ImmutableList.copyOf(combined.collect(Collectors.toList()));
+        List<ProviderOption> options = DisplayURLProvider.all().stream()
+            .map(input -> new ProviderOption(input.getClass().getName(), input.getDisplayName()))
+            .collect(Collectors.toList());
+        return ImmutableList.<ProviderOption>builder()
+            .add(ProviderOption.DEFAULT_OPTION).addAll(options).build();
     }
 
     public boolean isSelected(String providerId) {
