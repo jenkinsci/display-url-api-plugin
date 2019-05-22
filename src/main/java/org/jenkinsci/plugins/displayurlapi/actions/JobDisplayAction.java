@@ -24,6 +24,7 @@ public class JobDisplayAction extends AbstractDisplayAction {
 
     @Extension
     public static class TransientActionFactoryImpl extends TransientActionFactory {
+
         @Override
         public Class type() {
             return Job.class;

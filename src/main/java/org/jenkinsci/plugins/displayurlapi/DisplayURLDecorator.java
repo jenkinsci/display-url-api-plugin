@@ -36,7 +36,8 @@ public abstract class DisplayURLDecorator implements ExtensionPoint {
      */
     @NonNull
     public static String decorate(@NonNull DisplayURLContext context, @NonNull String url) {
-        ExtensionList<DisplayURLDecorator> extensionList = ExtensionList.lookup(DisplayURLDecorator.class);
+        ExtensionList<DisplayURLDecorator> extensionList = ExtensionList
+            .lookup(DisplayURLDecorator.class);
         if (extensionList.isEmpty()) {
             return url;
         }
@@ -50,7 +51,8 @@ public abstract class DisplayURLDecorator implements ExtensionPoint {
         }
         Map<String, String> encodedParameters = new TreeMap<String, String>();
         for (Map.Entry<String, String> p : parameters.entrySet()) {
-            encodedParameters.put(encode(p.getKey()), p.getValue() == null ? null : encode(p.getValue()));
+            encodedParameters
+                .put(encode(p.getKey()), p.getValue() == null ? null : encode(p.getValue()));
         }
         StringBuilder result = new StringBuilder(2083); // maximum URL length
         char sep = '?';

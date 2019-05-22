@@ -12,6 +12,7 @@ import java.io.IOException;
 
 @Extension
 public class EnvironmentContributorImpl extends EnvironmentContributor {
+
     @Override
     public void buildEnvironmentFor(@NonNull Run r, @NonNull EnvVars envs, @NonNull TaskListener listener) throws IOException, InterruptedException {
         DisplayURLContext ctx = DisplayURLContext.open();

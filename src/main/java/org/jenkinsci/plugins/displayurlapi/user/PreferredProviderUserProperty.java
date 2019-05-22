@@ -6,7 +6,6 @@ import hudson.Extension;
 import hudson.model.UserProperty;
 import hudson.model.UserPropertyDescriptor;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.jenkinsci.plugins.displayurlapi.DisplayURLProvider;
 import org.kohsuke.stapler.DataBoundConstructor;
 
@@ -27,7 +26,8 @@ public class PreferredProviderUserProperty extends UserProperty {
 
     public ProviderOption getProvider() {
         final DisplayURLProvider provider = getConfiguredProvider();
-        return provider == null ? ProviderOption.DEFAULT_OPTION : new ProviderOption(provider.getClass().getName(), provider.getDisplayName());
+        return provider == null ? ProviderOption.DEFAULT_OPTION
+            : new ProviderOption(provider.getClass().getName(), provider.getDisplayName());
     }
 
     public DisplayURLProvider getConfiguredProvider() {

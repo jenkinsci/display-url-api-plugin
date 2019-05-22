@@ -14,8 +14,9 @@ import org.jenkinsci.plugins.displayurlapi.actions.AbstractDisplayAction;
 import static org.apache.commons.lang.StringUtils.isNotEmpty;
 
 /**
- * Generates URLs for well known UI locations for use in notifications (e.g. mailer, HipChat, Slack, IRC, etc)
- * Extensible to allow plugins to override common URLs (e.g. Blue Ocean or another future secondary UI)
+ * Generates URLs for well known UI locations for use in notifications (e.g. mailer, HipChat, Slack,
+ * IRC, etc) Extensible to allow plugins to override common URLs (e.g. Blue Ocean or another future
+ * secondary UI)
  */
 public abstract class DisplayURLProvider implements ExtensionPoint {
 
@@ -40,7 +41,8 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
     public static DisplayURLProvider getDefault() {
         DisplayURLProvider defaultProvider = getPreferredProvider();
         if (defaultProvider == null) {
-            defaultProvider = ExtensionList.lookup(DisplayURLProvider.class).get(ClassicDisplayURLProvider.class);
+            defaultProvider = ExtensionList.lookup(DisplayURLProvider.class)
+                .get(ClassicDisplayURLProvider.class);
         }
         return defaultProvider;
     }
@@ -65,7 +67,9 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
         return this.getClass().getSimpleName();
     }
 
-    /** Name of provider to be used as an id. Do not use i18n */
+    /**
+     * Name of provider to be used as an id. Do not use i18n
+     */
     @NonNull
     public String getName() {
         return this.getClass().getSimpleName();
@@ -123,7 +127,8 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
                     // the link might be generated from another run so we only add this to the context if unset
                     ctx.run(run);
                 }
-                return DisplayURLDecorator.decorate(ctx, super.getRunURL(run) + DISPLAY_POSTFIX + "?page=changes");
+                return DisplayURLDecorator
+                    .decorate(ctx, super.getRunURL(run) + DISPLAY_POSTFIX + "?page=changes");
             } finally {
                 ctx.close();
             }

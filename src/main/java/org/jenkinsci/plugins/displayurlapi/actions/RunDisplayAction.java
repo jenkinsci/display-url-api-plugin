@@ -13,6 +13,7 @@ import org.kohsuke.stapler.StaplerRequest;
 import java.util.Collection;
 
 public class RunDisplayAction extends AbstractDisplayAction {
+
     private final Run run;
 
     protected RunDisplayAction(Run run) {
@@ -34,6 +35,7 @@ public class RunDisplayAction extends AbstractDisplayAction {
 
     @Extension
     public static class TransientActionFactoryImpl extends TransientActionFactory {
+
         @Override
         public Class type() {
             return Run.class;

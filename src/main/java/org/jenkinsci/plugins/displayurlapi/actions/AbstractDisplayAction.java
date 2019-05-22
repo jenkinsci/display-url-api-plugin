@@ -45,7 +45,7 @@ public abstract class AbstractDisplayAction implements Action {
 
     DisplayURLProvider lookupProvider(StaplerRequest req) {
         final String providerName = req.getParameter("provider");
-        if(StringUtils.isNotEmpty(providerName)) {
+        if (StringUtils.isNotEmpty(providerName)) {
             ExtensionList<DisplayURLProvider> providers = DisplayURLProvider.all();
             DisplayURLProvider provider = providers.stream()
                 .filter(Objects::nonNull)
@@ -53,7 +53,7 @@ public abstract class AbstractDisplayAction implements Action {
                 .findFirst()
                 .orElse(null);
 
-            if(provider != null) {
+            if (provider != null) {
                 return provider;
             }
         }
@@ -71,8 +71,9 @@ public abstract class AbstractDisplayAction implements Action {
         if (displayURLProvider == null) {
             ExtensionList<DisplayURLProvider> all = DisplayURLProvider.all();
             displayURLProvider = all.stream()
-                .filter(((Predicate<DisplayURLProvider>) ClassicDisplayURLProvider.class::isInstance)
-                    .negate())
+                .filter(
+                    ((Predicate<DisplayURLProvider>) ClassicDisplayURLProvider.class::isInstance)
+                        .negate())
                 .findFirst().orElse(DisplayURLProvider.getDefault());
         }
         return displayURLProvider;
