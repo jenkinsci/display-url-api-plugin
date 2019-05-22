@@ -41,7 +41,7 @@ public abstract class DisplayURLDecorator implements ExtensionPoint {
         if (extensionList.isEmpty()) {
             return url;
         }
-        Map<String, String> parameters = new TreeMap<String, String>();
+        Map<String, String> parameters = new TreeMap<>();
         // the extension with the highest ordinal wins for duplicate query parameters
         for (DisplayURLDecorator decorator : extensionList.reverseView()) {
             parameters.putAll(fixNull(decorator.parameters(context)));
@@ -49,7 +49,7 @@ public abstract class DisplayURLDecorator implements ExtensionPoint {
         if (parameters.isEmpty()) {
             return url;
         }
-        Map<String, String> encodedParameters = new TreeMap<String, String>();
+        Map<String, String> encodedParameters = new TreeMap<>();
         for (Map.Entry<String, String> p : parameters.entrySet()) {
             encodedParameters
                 .put(encode(p.getKey()), p.getValue() == null ? null : encode(p.getValue()));
@@ -99,7 +99,7 @@ public abstract class DisplayURLDecorator implements ExtensionPoint {
      */
     @NonNull
     private static <K, V> Map<K, V> fixNull(@CheckForNull Map<K, V> map) {
-        return map == null ? Collections.<K, V>emptyMap() : map;
+        return map == null ? Collections.emptyMap() : map;
     }
 
     /**
