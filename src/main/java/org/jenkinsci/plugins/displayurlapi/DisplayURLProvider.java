@@ -73,6 +73,11 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
     public abstract String getRunURL(Run<?, ?> run);
 
     /**
+     * Fully qualified URL for a page that displays artifacts for a project.
+     */
+    public abstract String getArtifactsURL(Run<?, ?> run);
+
+    /**
      * Fully qualified URL for a page that displays changes for a project.
      */
     public abstract String getChangesURL(Run<?, ?> run);
@@ -81,11 +86,6 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
      * Fully qualified URL for a page that displays tests for a project.
      */
     public abstract String getTestsURL(Run<?, ?> run);
-
-    /**
-     * Fully qualified URL for a page that displays artifacts for a project.
-     */
-    public abstract String getArtifactsURL(Run<?, ?> run);
 
     /**
      * Fully qualified URL for a Jobs home
@@ -111,6 +111,20 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
                     ctx.run(run);
                 }
                 return DisplayURLDecorator.decorate(ctx, super.getRunURL(run) + DISPLAY_POSTFIX);
+            } finally {
+                ctx.close();
+            }
+        }
+
+        @Override
+        public String getArtifactsURL(Run<?, ?> run) {
+            DisplayURLContext ctx = DisplayURLContext.open();
+            try {
+                if (ctx.run() == null) {
+                    // the link might be generated from another run so we only add this to the context if unset
+                    ctx.run(run);
+                }
+                return DisplayURLDecorator.decorate(ctx, super.getRunURL(run) + DISPLAY_POSTFIX + "?page=artifacts");
             } finally {
                 ctx.close();
             }
@@ -145,20 +159,6 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
         }
 
         @Override
-        public String getArtifactsURL(Run<?, ?> run) {
-            DisplayURLContext ctx = DisplayURLContext.open();
-            try {
-                if (ctx.run() == null) {
-                    // the link might be generated from another run so we only add this to the context if unset
-                    ctx.run(run);
-                }
-                return DisplayURLDecorator.decorate(ctx, super.getRunURL(run) + DISPLAY_POSTFIX + "?page=artifacts");
-            } finally {
-                ctx.close();
-            }
-        }
-
-        @Override
         public String getJobURL(Job<?, ?> job) {
             DisplayURLContext ctx = DisplayURLContext.open();
             try {
@@ -181,6 +181,17 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
         return clazz;
     }
 
+    protected String getTestsFolder() {
+        String folder = System.getenv(JENKINS_DISPLAYURL_TESTS_FOLDER_ENV);
+        if (StringUtils.isEmpty(folder)) {
+            folder = System.getProperty(JENKINS_DISPLAYURL_TESTS_FOLDER_PROP);
+        }
+        if (StringUtils.isEmpty(folder)) {
+            folder = StringUtils.EMPTY;
+        }
+        return folder;
+    }
+
     @Nullable
     public static DisplayURLProvider getPreferredProvider() {
         String clazz = findClass();
@@ -192,4 +203,7 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
 
     private static final String JENKINS_DISPLAYURL_PROVIDER_ENV = "JENKINS_DISPLAYURL_PROVIDER";
     private static final String JENKINS_DISPLAYURL_PROVIDER_PROP = "jenkins.displayurl.provider";
+
+    private static final String JENKINS_DISPLAYURL_TESTS_FOLDER_ENV = "JENKINS_DISPLAYURL_TESTS_FOLDER";
+    private static final String JENKINS_DISPLAYURL_TESTS_FOLDER_PROP = "jenkins.displayurl.tests.folder";
 }

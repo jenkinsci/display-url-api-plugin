@@ -27,18 +27,18 @@ public class ClassicDisplayURLProvider extends DisplayURLProvider {
     }
 
     @Override
+    public String getArtifactsURL(Run<?, ?> run) {
+        return getRunURL(run) + "artifact";
+    }
+
+    @Override
     public String getChangesURL(Run<?, ?> run) {
         return getJobURL(run.getParent()) + "changes";
     }
 
     @Override
     public String getTestsURL(Run<?, ?> run) {
-        return "";
-    }
-
-    @Override
-    public String getArtifactsURL(Run<?, ?> run) {
-        return getRunURL(run) + "artifact";
+        return getRunURL(run) + super.getTestsFolder();
     }
 
     @Override
