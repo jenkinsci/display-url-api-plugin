@@ -32,6 +32,11 @@ public class ClassicDisplayURLProvider extends DisplayURLProvider {
     }
 
     @Override
+    public String getTestsURL(Run<?, ?> run) {
+        return "";
+    }
+
+    @Override
     public String getArtifactsURL(Run<?, ?> run) {
         return getRunURL(run) + "artifact";
     }

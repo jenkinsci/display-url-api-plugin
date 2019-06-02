@@ -9,9 +9,6 @@ import hudson.model.Run;
 import jenkins.model.Jenkins;
 import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.plugins.displayurlapi.actions.AbstractDisplayAction;
-import org.jenkinsci.plugins.displayurlapi.user.PreferredProviderUserProperty;
-import org.kohsuke.accmod.Restricted;
-import org.kohsuke.accmod.restrictions.NoExternalUse;
 
 import static org.apache.commons.lang.StringUtils.isNotEmpty;
 
@@ -81,6 +78,11 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
     public abstract String getChangesURL(Run<?, ?> run);
 
     /**
+     * Fully qualified URL for a page that displays tests for a project.
+     */
+    public abstract String getTestsURL(Run<?, ?> run);
+
+    /**
      * Fully qualified URL for a page that displays artifacts for a project.
      */
     public abstract String getArtifactsURL(Run<?, ?> run);
@@ -123,6 +125,20 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
                     ctx.run(run);
                 }
                 return DisplayURLDecorator.decorate(ctx, super.getRunURL(run) + DISPLAY_POSTFIX + "?page=changes");
+            } finally {
+                ctx.close();
+            }
+        }
+
+        @Override
+        public String getTestsURL(Run<?, ?> run) {
+            DisplayURLContext ctx = DisplayURLContext.open();
+            try {
+                if (ctx.run() == null) {
+                    // the link might be generated from another run so we only add this to the context if unset
+                    ctx.run(run);
+                }
+                return DisplayURLDecorator.decorate(ctx, super.getRunURL(run) + DISPLAY_POSTFIX + "?page=tests");
             } finally {
                 ctx.close();
             }

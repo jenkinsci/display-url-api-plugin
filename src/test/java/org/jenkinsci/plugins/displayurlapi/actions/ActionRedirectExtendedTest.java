@@ -45,6 +45,16 @@ public class ActionRedirectExtendedTest extends AbstractActionRedirectTest {
     }
 
     @Test
+    public void testRedirectForTestsURL() throws Exception {
+        given()
+                .urlEncodingEnabled(false)
+                .redirects().follow(false)
+                .when().get(provider.getTestsURL(run)).then()
+                .statusCode(HttpServletResponse.SC_MOVED_TEMPORARILY)
+                .header("Location", getRedirectedProvider().getTestsURL(run));
+    }
+
+    @Test
     public void testRedirectForArtifactsURL() throws Exception {
         given()
             .urlEncodingEnabled(false)
@@ -100,6 +110,11 @@ public class ActionRedirectExtendedTest extends AbstractActionRedirectTest {
         }
 
         @Override
+        public String getTestsURL(Run<?, ?> run) {
+            return DisplayURLProvider.getDefault().getTestsURL(run) + EXTRA_CONTENT_IN_URL;
+        }
+
+        @Override
         public String getArtifactsURL(Run<?, ?> run) {
             return DisplayURLProvider.getDefault().getArtifactsURL(run) + EXTRA_CONTENT_IN_URL;
         }
@@ -123,6 +138,11 @@ public class ActionRedirectExtendedTest extends AbstractActionRedirectTest {
         @Override
         public String getChangesURL(Run<?, ?> run) {
             return DisplayURLProvider.getDefault().getChangesURL(run) + EXTRA_CONTENT_IN_URL;
+        }
+
+        @Override
+        public String getTestsURL(Run<?, ?> run) {
+            return DisplayURLProvider.getDefault().getTestsURL(run) + EXTRA_CONTENT_IN_URL;
         }
 
         @Override
