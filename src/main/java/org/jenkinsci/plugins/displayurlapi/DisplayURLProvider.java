@@ -73,7 +73,7 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
     public abstract String getRunURL(Run<?, ?> run);
 
     /**
-     * Fully qualified URL for a page that displays artifacts for a project.
+     * Fully qualified URL for a page that displays artifacts for a Run.
      */
     public abstract String getArtifactsURL(Run<?, ?> run);
 
@@ -83,7 +83,7 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
     public abstract String getChangesURL(Run<?, ?> run);
 
     /**
-     * Fully qualified URL for a page that displays tests for a project.
+     * Fully qualified URL for a page that displays tests for a Run.
      */
     public abstract String getTestsURL(Run<?, ?> run);
 
