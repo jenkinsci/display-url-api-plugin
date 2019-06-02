@@ -26,6 +26,8 @@ public class RunDisplayAction extends AbstractDisplayAction {
         String url;
         if ("changes".equals(page)) {
             url = provider.getChangesURL(run);
+        } else if ("artifacts".equals(page)) {
+            url = provider.getArtifactsURL(run);
         } else {
             url = provider.getRunURL(run);
         }

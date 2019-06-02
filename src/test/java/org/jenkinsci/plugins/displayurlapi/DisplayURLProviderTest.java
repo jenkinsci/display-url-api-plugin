@@ -35,10 +35,13 @@ public class DisplayURLProviderTest {
                 DisplayURLProvider.get().getJobURL(project));
         assertEquals(root + "job/my%20folder/job/my%20job/1/display/redirect?page=changes",
                 DisplayURLProvider.get().getChangesURL(run));
+        assertEquals(root + "job/my%20folder/job/my%20job/1/display/redirect?page=artifacts",
+                DisplayURLProvider.get().getArtifactsURL(run));
 
         EnvVars environment = run.getEnvironment();
         assertEquals(DisplayURLProvider.get().getRunURL(run), environment.get("RUN_DISPLAY_URL"));
         assertEquals(DisplayURLProvider.get().getChangesURL(run), environment.get("RUN_CHANGES_DISPLAY_URL"));
+        assertEquals(DisplayURLProvider.get().getArtifactsURL(run), environment.get("RUN_ARTIFACTS_DISPLAY_URL"));
         assertEquals(DisplayURLProvider.get().getJobURL(project), environment.get("JOB_DISPLAY_URL"));
     }
 
@@ -59,6 +62,9 @@ public class DisplayURLProviderTest {
         assertEquals(root + "job/my%20folder/job/my%20job/1/display/redirect?page=changes&utm_campaign=jenkins"
                         + "&utm_source=Jenkins&utm_term=my+folder%2Fmy+job%231",
                 DisplayURLProvider.get().getChangesURL(run));
+        assertEquals(root + "job/my%20folder/job/my%20job/1/display/redirect?page=artifacts&utm_campaign=jenkins"
+                        + "&utm_source=Jenkins&utm_term=my+folder%2Fmy+job%231",
+                DisplayURLProvider.get().getArtifactsURL(run));
         DisplayURLContext ctx = DisplayURLContext.open();
         try {
             ctx.plugin(Jenkins.getActiveInstance().getPluginManager().getPlugin("display-url-api"));
@@ -73,6 +79,9 @@ public class DisplayURLProviderTest {
             assertEquals(root + "job/my%20folder/job/my%20job/1/display/redirect?page=changes&utm_campaign=display"
                             + "-url-api&utm_source=Jenkins&utm_term=my+folder%2Fmy+job%231",
                     DisplayURLProvider.get().getChangesURL(run));
+            assertEquals(root + "job/my%20folder/job/my%20job/1/display/redirect?page=artifacts&utm_campaign=display"
+                            + "-url-api&utm_source=Jenkins&utm_term=my+folder%2Fmy+job%231",
+                    DisplayURLProvider.get().getArtifactsURL(run));
         } finally {
             ctx.close();
         }
@@ -80,8 +89,8 @@ public class DisplayURLProviderTest {
         EnvVars environment = run.getEnvironment();
         assertEquals(DisplayURLProvider.get().getRunURL(run), environment.get("RUN_DISPLAY_URL"));
         assertEquals(DisplayURLProvider.get().getChangesURL(run), environment.get("RUN_CHANGES_DISPLAY_URL"));
+        assertEquals(DisplayURLProvider.get().getArtifactsURL(run), environment.get("RUN_ARTIFACTS_DISPLAY_URL"));
         assertEquals(DisplayURLProvider.get().getJobURL(project), environment.get("JOB_DISPLAY_URL"));
-
     }
 
     @TestExtension("decoration")

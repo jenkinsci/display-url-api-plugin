@@ -45,6 +45,16 @@ public class ActionRedirectExtendedTest extends AbstractActionRedirectTest {
     }
 
     @Test
+    public void testRedirectForArtifactsURL() throws Exception {
+        given()
+            .urlEncodingEnabled(false)
+            .redirects().follow(false)
+            .when().get(provider.getArtifactsURL(run)).then()
+            .statusCode(HttpServletResponse.SC_MOVED_TEMPORARILY)
+            .header("Location", getRedirectedProvider().getArtifactsURL(run));
+    }
+
+    @Test
     public void testRedirectForYetAnotherProviderParameter() throws Exception {
         given()
                 .urlEncodingEnabled(false)
@@ -61,6 +71,7 @@ public class ActionRedirectExtendedTest extends AbstractActionRedirectTest {
         assertEquals(root + "job/my%20folder/job/my%20job/1/another", getRedirectedProvider().getRunURL(run));
         assertEquals(root + "job/my%20folder/job/my%20job/another", getRedirectedProvider().getJobURL(job));
         assertEquals(root + "job/my%20folder/job/my%20job/changesanother", getRedirectedProvider().getChangesURL(run));
+        assertEquals(root + "job/my%20folder/job/my%20job/1/artifactanother", getRedirectedProvider().getArtifactsURL(run));
     }
 
 
@@ -89,6 +100,11 @@ public class ActionRedirectExtendedTest extends AbstractActionRedirectTest {
         }
 
         @Override
+        public String getArtifactsURL(Run<?, ?> run) {
+            return DisplayURLProvider.getDefault().getArtifactsURL(run) + EXTRA_CONTENT_IN_URL;
+        }
+
+        @Override
         public String getJobURL(Job<?, ?> project) {
             return DisplayURLProvider.getDefault().getJobURL(project) + EXTRA_CONTENT_IN_URL;
         }
@@ -107,6 +123,11 @@ public class ActionRedirectExtendedTest extends AbstractActionRedirectTest {
         @Override
         public String getChangesURL(Run<?, ?> run) {
             return DisplayURLProvider.getDefault().getChangesURL(run) + EXTRA_CONTENT_IN_URL;
+        }
+
+        @Override
+        public String getArtifactsURL(Run<?, ?> run) {
+            return DisplayURLProvider.getDefault().getArtifactsURL(run) + EXTRA_CONTENT_IN_URL;
         }
 
         @Override

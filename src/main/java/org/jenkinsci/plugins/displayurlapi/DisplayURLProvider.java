@@ -81,6 +81,11 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
     public abstract String getChangesURL(Run<?, ?> run);
 
     /**
+     * Fully qualified URL for a page that displays artifacts for a project.
+     */
+    public abstract String getArtifactsURL(Run<?, ?> run);
+
+    /**
      * Fully qualified URL for a Jobs home
      */
     public abstract String getJobURL(Job<?, ?> job);
@@ -118,6 +123,20 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
                     ctx.run(run);
                 }
                 return DisplayURLDecorator.decorate(ctx, super.getRunURL(run) + DISPLAY_POSTFIX + "?page=changes");
+            } finally {
+                ctx.close();
+            }
+        }
+
+        @Override
+        public String getArtifactsURL(Run<?, ?> run) {
+            DisplayURLContext ctx = DisplayURLContext.open();
+            try {
+                if (ctx.run() == null) {
+                    // the link might be generated from another run so we only add this to the context if unset
+                    ctx.run(run);
+                }
+                return DisplayURLDecorator.decorate(ctx, super.getRunURL(run) + DISPLAY_POSTFIX + "?page=artifacts");
             } finally {
                 ctx.close();
             }

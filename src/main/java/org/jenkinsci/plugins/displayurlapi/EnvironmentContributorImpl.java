@@ -21,6 +21,7 @@ public class EnvironmentContributorImpl extends EnvironmentContributor {
             DisplayURLProvider urlProvider = DisplayURLProvider.get();
             envs.put("RUN_DISPLAY_URL", urlProvider.getRunURL(r));
             envs.put("RUN_CHANGES_DISPLAY_URL", urlProvider.getChangesURL(r));
+            envs.put("RUN_ARTIFACTS_DISPLAY_URL", urlProvider.getArtifactsURL(r));
         } finally {
             ctx.close();
         }

@@ -42,6 +42,16 @@ public class ActionRedirectClassicTest extends AbstractActionRedirectTest {
             .header("Location", getRedirectedProvider().getChangesURL(run));
     }
 
+    @Test
+    public void testRedirectForArtifactsURL() throws Exception {
+        given()
+            .urlEncodingEnabled(false)
+            .redirects().follow(false)
+            .when().get(provider.getArtifactsURL(run)).then()
+            .statusCode(HttpServletResponse.SC_MOVED_TEMPORARILY)
+            .header("Location", getRedirectedProvider().getArtifactsURL(run));
+    }
+
     @Override
     protected DisplayURLProvider getRedirectedProvider() {
         return Iterables.find(DisplayURLProvider.all(), Predicates.instanceOf(ClassicDisplayURLProvider.class));
