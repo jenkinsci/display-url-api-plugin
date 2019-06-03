@@ -17,6 +17,7 @@ import static io.restassured.RestAssured.given;
 import static org.junit.Assert.assertEquals;
 
 public class ActionRedirectExtendedTest extends AbstractActionRedirectTest {
+
     @Test
     public void testRedirectForJobURL() throws Exception {
         given()
@@ -40,11 +41,11 @@ public class ActionRedirectExtendedTest extends AbstractActionRedirectTest {
     @Test
     public void testRedirectForArtifactsURL() throws Exception {
         given()
-                .urlEncodingEnabled(false)
-                .redirects().follow(false)
-                .when().get(provider.getArtifactsURL(run)).then()
-                .statusCode(HttpServletResponse.SC_MOVED_TEMPORARILY)
-                .header("Location", getRedirectedProvider().getArtifactsURL(run));
+            .urlEncodingEnabled(false)
+            .redirects().follow(false)
+            .when().get(provider.getArtifactsURL(run)).then()
+            .statusCode(HttpServletResponse.SC_MOVED_TEMPORARILY)
+            .header("Location", getRedirectedProvider().getArtifactsURL(run));
     }
 
     @Test
@@ -60,32 +61,32 @@ public class ActionRedirectExtendedTest extends AbstractActionRedirectTest {
     @Test
     public void testRedirectForTestsURL() throws Exception {
         given()
-                .urlEncodingEnabled(false)
-                .redirects().follow(false)
-                .when().get(provider.getTestsURL(run)).then()
-                .statusCode(HttpServletResponse.SC_MOVED_TEMPORARILY)
-                .header("Location", getRedirectedProvider().getTestsURL(run));
+            .urlEncodingEnabled(false)
+            .redirects().follow(false)
+            .when().get(provider.getTestsURL(run)).then()
+            .statusCode(HttpServletResponse.SC_MOVED_TEMPORARILY)
+            .header("Location", getRedirectedProvider().getTestsURL(run));
     }
 
     @Test
     public void testRedirectForTestsURLWithClassicTestsFolder() throws Exception {
         System.setProperty("jenkins.classic.displayurl.tests.folder", "folder");
         given()
-                .urlEncodingEnabled(false)
-                .redirects().follow(false)
-                .when().get(provider.getTestsURL(run)).then()
-                .statusCode(HttpServletResponse.SC_MOVED_TEMPORARILY)
-                .header("Location", getRedirectedProvider().getTestsURL(run));
+            .urlEncodingEnabled(false)
+            .redirects().follow(false)
+            .when().get(provider.getTestsURL(run)).then()
+            .statusCode(HttpServletResponse.SC_MOVED_TEMPORARILY)
+            .header("Location", getRedirectedProvider().getTestsURL(run));
     }
 
     @Test
     public void testRedirectForYetAnotherProviderParameter() throws Exception {
         given()
-                .urlEncodingEnabled(false)
-                .redirects().follow(false)
-                .when().get(provider.getChangesURL(run) + "&provider=YetAnotherDisplayURLProvider").then()
-                .statusCode(HttpServletResponse.SC_MOVED_TEMPORARILY)
-                .header("Location", getYetAnotherRedirectedProvider().getChangesURL(run));
+            .urlEncodingEnabled(false)
+            .redirects().follow(false)
+            .when().get(provider.getChangesURL(run) + "&provider=YetAnotherDisplayURLProvider").then()
+            .statusCode(HttpServletResponse.SC_MOVED_TEMPORARILY)
+            .header("Location", getYetAnotherRedirectedProvider().getChangesURL(run));
     }
 
     @Test
@@ -101,12 +102,9 @@ public class ActionRedirectExtendedTest extends AbstractActionRedirectTest {
 
     @Test
     public void testUrlsTestsFolder() throws Exception {
-        System.setProperty("jenkins.displayurl.tests.folder", "folder");
+        System.setProperty("jenkins.classic.displayurl.tests.folder", "folder");
         String root = DisplayURLProvider.get().getRoot();
         assertEquals(root + "job/my%20folder/job/my%20job/1/folderanother", getRedirectedProvider().getTestsURL(run));
-
-        System.setProperty("jenkins.displayurl.provider", ClassicDisplayURLProvider.class.getName());
-        Assert.assertThat(DisplayURLProvider.getDefault(), Matchers.instanceOf(ClassicDisplayURLProvider.class));
     }
 
 

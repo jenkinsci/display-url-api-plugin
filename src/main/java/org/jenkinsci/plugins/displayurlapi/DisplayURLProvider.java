@@ -180,18 +180,6 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
         }
         return clazz;
     }
-
-    protected String getTestsFolder() {
-        String folder = System.getenv(JENKINS_DISPLAYURL_TESTS_FOLDER_ENV);
-        if (StringUtils.isEmpty(folder)) {
-            folder = System.getProperty(JENKINS_DISPLAYURL_TESTS_FOLDER_PROP);
-        }
-        if (StringUtils.isEmpty(folder)) {
-            folder = StringUtils.EMPTY;
-        }
-        return folder;
-    }
-
     @Nullable
     public static DisplayURLProvider getPreferredProvider() {
         String clazz = findClass();
@@ -203,7 +191,4 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
 
     private static final String JENKINS_DISPLAYURL_PROVIDER_ENV = "JENKINS_DISPLAYURL_PROVIDER";
     private static final String JENKINS_DISPLAYURL_PROVIDER_PROP = "jenkins.displayurl.provider";
-
-    private static final String JENKINS_DISPLAYURL_TESTS_FOLDER_ENV = "JENKINS_DISPLAYURL_TESTS_FOLDER";
-    private static final String JENKINS_DISPLAYURL_TESTS_FOLDER_PROP = "jenkins.displayurl.tests.folder";
 }
