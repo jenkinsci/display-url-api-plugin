@@ -68,8 +68,8 @@ public class ActionRedirectExtendedTest extends AbstractActionRedirectTest {
     }
 
     @Test
-    public void testRedirectForTestsURLWithCustomsTestsFolder() throws Exception {
-        System.setProperty("jenkins.displayurl.tests.folder", "folder");
+    public void testRedirectForTestsURLWithClassicTestsFolder() throws Exception {
+        System.setProperty("jenkins.classic.displayurl.tests.folder", "folder");
         given()
                 .urlEncodingEnabled(false)
                 .redirects().follow(false)

@@ -22,7 +22,7 @@ public class EnvironmentContributorImpl extends EnvironmentContributor {
             envs.put("RUN_DISPLAY_URL", urlProvider.getRunURL(r));
             envs.put("RUN_ARTIFACTS_DISPLAY_URL", urlProvider.getArtifactsURL(r));
             envs.put("RUN_CHANGES_DISPLAY_URL", urlProvider.getChangesURL(r));
-            envs.put("RUN_TEST_DISPLAY_URL", urlProvider.getTestsURL(r));
+            envs.put("RUN_TESTS_DISPLAY_URL", urlProvider.getTestsURL(r));
         } finally {
             ctx.close();
         }
