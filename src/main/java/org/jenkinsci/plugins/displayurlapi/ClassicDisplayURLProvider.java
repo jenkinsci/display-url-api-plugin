@@ -53,7 +53,7 @@ public class ClassicDisplayURLProvider extends DisplayURLProvider {
             folder = System.getProperty(JENKINS_CLASSIC_DISPLAYURL_TESTS_FOLDER_PROP);
         }
         if (StringUtils.isEmpty(folder)) {
-            folder = StringUtils.EMPTY;
+            folder = "testReport";
         }
         return folder;
     }
