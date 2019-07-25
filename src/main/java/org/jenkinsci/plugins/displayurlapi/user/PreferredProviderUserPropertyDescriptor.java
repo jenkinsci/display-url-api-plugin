@@ -1,5 +1,6 @@
 package org.jenkinsci.plugins.displayurlapi.user;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.model.User;
 import hudson.model.UserProperty;
 import hudson.model.UserPropertyDescriptor;
@@ -18,6 +19,7 @@ public class PreferredProviderUserPropertyDescriptor extends UserPropertyDescrip
     }
 
     @Override
+    @NonNull
     public String getDisplayName() {
         return Messages.display_url();
     }

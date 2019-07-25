@@ -29,11 +29,11 @@ public class DisplayURLContext implements Closeable {
     /**
      * The current thread's context.
      */
-    private static ThreadLocal<Stack<DisplayURLContext>> context = new ThreadLocal<Stack<DisplayURLContext>>();
+    private static ThreadLocal<Stack<DisplayURLContext>> context = new ThreadLocal<>();
     /**
      * Class names that we expect to be in the stack trace for calls to {@link #open()}.
      */
-    private static Set<String> ourPluginClassNames = new HashSet<String>(Arrays.asList(
+    private static Set<String> ourPluginClassNames = new HashSet<>(Arrays.asList(
             DisplayURLContext.class.getName(),
             DisplayURLProvider.class.getName(),
             DisplayURLProvider.DisplayURLProviderImpl.class.getName()
@@ -88,7 +88,7 @@ public class DisplayURLContext implements Closeable {
      */
     private void guessPlugin() {
         StackTraceElement[] stack = (new Throwable()).getStackTrace();
-        PluginManager manager = Jenkins.getActiveInstance().getPluginManager();
+        PluginManager manager = Jenkins.getInstance().getPluginManager();
         ClassLoader loader = manager.uberClassLoader;
         for (StackTraceElement frame : stack) {
             String cname = frame.getClassName();
@@ -117,7 +117,7 @@ public class DisplayURLContext implements Closeable {
     public static DisplayURLContext open() {
         Stack<DisplayURLContext> stack = DisplayURLContext.context.get();
         if (stack == null) {
-            stack = new Stack<DisplayURLContext>();
+            stack = new Stack<>();
             DisplayURLContext.context.set(stack);
         }
         DisplayURLContext context = new DisplayURLContext(stack.isEmpty() ? null : stack.peek());
@@ -225,7 +225,7 @@ public class DisplayURLContext implements Closeable {
     @NonNull
     public DisplayURLContext attribute(String name, String value) {
         if (this.attributes == null) {
-            this.attributes = new HashMap<String, String>();
+            this.attributes = new HashMap<>();
         }
         this.attributes.put(name, value);
         return this;

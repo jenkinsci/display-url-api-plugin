@@ -36,11 +36,12 @@ public abstract class DisplayURLDecorator implements ExtensionPoint {
      */
     @NonNull
     public static String decorate(@NonNull DisplayURLContext context, @NonNull String url) {
-        ExtensionList<DisplayURLDecorator> extensionList = ExtensionList.lookup(DisplayURLDecorator.class);
+        ExtensionList<DisplayURLDecorator> extensionList = ExtensionList
+            .lookup(DisplayURLDecorator.class);
         if (extensionList.isEmpty()) {
             return url;
         }
-        Map<String, String> parameters = new TreeMap<String, String>();
+        Map<String, String> parameters = new TreeMap<>();
         // the extension with the highest ordinal wins for duplicate query parameters
         for (DisplayURLDecorator decorator : extensionList.reverseView()) {
             parameters.putAll(fixNull(decorator.parameters(context)));
@@ -48,9 +49,10 @@ public abstract class DisplayURLDecorator implements ExtensionPoint {
         if (parameters.isEmpty()) {
             return url;
         }
-        Map<String, String> encodedParameters = new TreeMap<String, String>();
+        Map<String, String> encodedParameters = new TreeMap<>();
         for (Map.Entry<String, String> p : parameters.entrySet()) {
-            encodedParameters.put(encode(p.getKey()), p.getValue() == null ? null : encode(p.getValue()));
+            encodedParameters
+                .put(encode(p.getKey()), p.getValue() == null ? null : encode(p.getValue()));
         }
         StringBuilder result = new StringBuilder(2083); // maximum URL length
         char sep = '?';
@@ -97,7 +99,7 @@ public abstract class DisplayURLDecorator implements ExtensionPoint {
      */
     @NonNull
     private static <K, V> Map<K, V> fixNull(@CheckForNull Map<K, V> map) {
-        return map == null ? Collections.<K, V>emptyMap() : map;
+        return map == null ? Collections.emptyMap() : map;
     }
 
     /**
