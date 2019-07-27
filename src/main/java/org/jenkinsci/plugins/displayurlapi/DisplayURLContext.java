@@ -41,7 +41,7 @@ public class DisplayURLContext implements Closeable {
             .maximumSize(Integer.getInteger( DisplayURLContext.class.getName() + ".cache.size", 1000))
             // cache ttl default 5 minutes
             .expireAfterAccess( Integer.getInteger( DisplayURLContext.class.getName() + ".cache.ttl", 300000), TimeUnit.MILLISECONDS)
-            .weakValues()
+            //.weakValues() not sure we need this as entries are pluginWrapper will never be garbaged
             .build();
 
     /**
