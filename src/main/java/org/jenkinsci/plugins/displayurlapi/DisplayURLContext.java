@@ -1,5 +1,7 @@
 package org.jenkinsci.plugins.displayurlapi;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.PluginManager;
@@ -12,8 +14,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.Stack;
+import java.util.concurrent.TimeUnit;
+
 import jenkins.model.Jenkins;
 
 /**
@@ -30,6 +35,15 @@ public class DisplayURLContext implements Closeable {
      * The current thread's context.
      */
     private static ThreadLocal<Stack<DisplayURLContext>> context = new ThreadLocal<>();
+
+    private static final Cache<String, Optional<PluginWrapper>> CACHE =
+        CacheBuilder.newBuilder()
+            .maximumSize(Integer.getInteger( DisplayURLContext.class.getName() + ".cache.size", 1000))
+            // cache ttl default 5 minutes
+            .expireAfterAccess( Integer.getInteger( DisplayURLContext.class.getName() + ".cache.ttl", 300000), TimeUnit.MILLISECONDS)
+            .weakValues()
+            .build();
+
     /**
      * Class names that we expect to be in the stack trace for calls to {@link #open()}.
      */
@@ -95,15 +109,26 @@ public class DisplayURLContext implements Closeable {
             if (ourPluginClassNames.contains(cname)) {
                 continue;
             }
-            try {
-                Class<?> clazz = loader.loadClass(cname);
-                PluginWrapper wrapper = manager.whichPlugin(clazz);
-                if (wrapper != null && !OUR_PLUGIN_NAME.equals(wrapper.getShortName())) {
-                    plugin = wrapper;
-                    break;
+            Optional<PluginWrapper> wrapper = CACHE.getIfPresent( cname);
+            if(wrapper != null){
+                if(wrapper.isPresent()){
+                    plugin = wrapper.get();
                 }
-            } catch (ClassNotFoundException e) {
-                // ignore, it's not a plugin
+            } else
+            {
+                try {
+                    Class<?> clazz = loader.loadClass( cname );
+                    PluginWrapper pluginWrapper = manager.whichPlugin( clazz );
+                    if ( pluginWrapper != null && !OUR_PLUGIN_NAME.equals( pluginWrapper.getShortName() ) ) {
+                        plugin = pluginWrapper;
+                        CACHE.put( cname, Optional.of( pluginWrapper ) );
+                        break;
+                    } else {
+                        CACHE.put( cname, Optional.empty() );
+                    }
+                } catch ( ClassNotFoundException e ) {
+                    // ignore, it's not a plugin
+                }
             }
         }
     }
