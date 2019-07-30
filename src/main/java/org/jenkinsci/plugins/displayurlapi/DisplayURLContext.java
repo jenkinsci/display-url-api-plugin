@@ -133,6 +133,27 @@ public class DisplayURLContext implements Closeable {
         }
     }
 
+
+    /**
+     * Opens a {@link DisplayURLContext} for the current thread.
+     * @param guessPlugin to try and infer the current plugin (a bit resources consuming as inspect stacktrace and classloader)
+     * @return the {@link DisplayURLContext}.
+     */
+    @NonNull
+    public static DisplayURLContext open(boolean guessPlugin) {
+        Stack<DisplayURLContext> stack = DisplayURLContext.context.get();
+        if (stack == null) {
+            stack = new Stack<>();
+            DisplayURLContext.context.set(stack);
+        }
+        DisplayURLContext context = new DisplayURLContext(stack.isEmpty() ? null : stack.peek());
+        if (stack.isEmpty() && guessPlugin) {
+            context.guessPlugin();
+        }
+        stack.push(context);
+        return context;
+    }
+
     /**
      * Opens a {@link DisplayURLContext} for the current thread.
      *
@@ -140,17 +161,7 @@ public class DisplayURLContext implements Closeable {
      */
     @NonNull
     public static DisplayURLContext open() {
-        Stack<DisplayURLContext> stack = DisplayURLContext.context.get();
-        if (stack == null) {
-            stack = new Stack<>();
-            DisplayURLContext.context.set(stack);
-        }
-        DisplayURLContext context = new DisplayURLContext(stack.isEmpty() ? null : stack.peek());
-        if (stack.isEmpty()) {
-            context.guessPlugin();
-        }
-        stack.push(context);
-        return context;
+        return open(true);
     }
 
     /**
