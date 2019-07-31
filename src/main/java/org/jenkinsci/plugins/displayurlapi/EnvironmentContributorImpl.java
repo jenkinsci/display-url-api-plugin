@@ -15,7 +15,7 @@ public class EnvironmentContributorImpl extends EnvironmentContributor {
 
     @Override
     public void buildEnvironmentFor(@NonNull Run r, @NonNull EnvVars envs, @NonNull TaskListener listener) throws IOException, InterruptedException {
-        try (DisplayURLContext ctx = DisplayURLContext.open(false)) {
+        try (DisplayURLContext ctx = DisplayURLContext.open(false)) { // environment contributor "comes from" core
             ctx.run(r);
             DisplayURLProvider urlProvider = DisplayURLProvider.get();
             envs.put("RUN_DISPLAY_URL", urlProvider.getRunURL(r));
