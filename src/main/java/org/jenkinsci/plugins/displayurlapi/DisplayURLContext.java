@@ -136,7 +136,7 @@ public class DisplayURLContext implements Closeable {
 
     /**
      * Opens a {@link DisplayURLContext} for the current thread.
-     * @param guessPlugin to try and infer the current plugin (a bit resources consuming as inspect stacktrace and classloader)
+     * @param guessPlugin try to infer the current plugin (resource intensive as requires a stack trace and class loading). Use {@code false} if you know the caller will always be Jenkins core.
      * @return the {@link DisplayURLContext}.
      */
     @NonNull
