@@ -11,4 +11,4 @@ URLs can be requested/extended for these UI locations:
 -   Test result.
 
 ##  Version history
-Please refer to [Changelog](CHANGELOG.md)
+Please refer to the [changelog](CHANGELOG.md)
