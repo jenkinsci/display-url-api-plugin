@@ -1,2 +1,14 @@
-# display-url-api
-Provides the DisplayURLProvider extension point to provide alternate URLs for use in notifications
+# Display URL API Plugin
+
+Provides an extension point to define alternate URLs for use in notifications.
+
+URLs can be requested/extended for these UI locations:
+
+-   Root page.
+-   Job.
+-   Run.
+-   Run changes.
+-   Test result.
+
+##  Version history
+Please refer to [Changelog](CHANGELOG.md)
