@@ -19,7 +19,7 @@
 
   <name>Display URL API</name>
   <description>Provides the DisplayURLProvider extension point to provide alternate URLs for use in notifications</description>
-  <url>https://wiki.jenkins-ci.org/display/JENKINS/Display+URL+API+Plugin</url>
+  <url>https://github.com/jenkinsci/display-url-api-plugin</url>
 
   <licenses>
     <license>
