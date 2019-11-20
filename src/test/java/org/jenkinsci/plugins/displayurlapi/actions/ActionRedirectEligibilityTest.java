@@ -96,11 +96,15 @@ public class ActionRedirectEligibilityTest extends AbstractActionRedirectTest {
 
     @Override
     protected DisplayURLProvider getRedirectedProvider() {
-        return Iterables.find(DisplayURLProvider.all(), Predicates.instanceOf(ClassicDisplayURLProvider.class));
+        return DisplayURLProvider.all().stream()
+            .filter(ClassicDisplayURLProvider.class::isInstance).findFirst()
+            .orElse(null);
     }
 
     private DisplayURLProvider getEligibleRedirectedProvider() {
-        return Iterables.find(DisplayURLProvider.all(), Predicates.instanceOf(EligibleDisplayURLProvider.class));
+        return DisplayURLProvider.all().stream()
+            .filter(EligibleDisplayURLProvider.class::isInstance).findFirst()
+            .orElse(null);
     }
 
     @TestExtension

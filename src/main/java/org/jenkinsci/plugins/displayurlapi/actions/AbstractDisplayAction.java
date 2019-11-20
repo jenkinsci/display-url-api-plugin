@@ -1,18 +1,18 @@
 package org.jenkinsci.plugins.displayurlapi.actions;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
-import com.google.common.collect.Iterables;
+import hudson.ExtensionList;
 import hudson.model.Action;
 import hudson.model.User;
+import java.util.Objects;
+import java.util.function.Predicate;
+import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.plugins.displayurlapi.ClassicDisplayURLProvider;
 import org.jenkinsci.plugins.displayurlapi.DisplayURLProvider;
 import org.jenkinsci.plugins.displayurlapi.user.PreferredProviderUserProperty;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
-import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
@@ -45,27 +45,22 @@ public abstract class AbstractDisplayAction implements Action {
 
     DisplayURLProvider lookupProvider(StaplerRequest req) {
         final String providerName = req.getParameter("provider");
-        if(providerName != null && !providerName.isEmpty()) {
-            Iterable<DisplayURLProvider> providers = DisplayURLProvider.all();
-            Iterable<DisplayURLProvider> filtered = Iterables.filter(providers, new Predicate<DisplayURLProvider>() {
-                @Override
-                public boolean apply(@Nullable DisplayURLProvider displayURLProvider) {
-                    if(displayURLProvider == null) {
-                        return false;
-                    }
+        if (StringUtils.isNotEmpty(providerName)) {
+            ExtensionList<DisplayURLProvider> providers = DisplayURLProvider.all();
+            DisplayURLProvider provider = providers.stream()
+                .filter(Objects::nonNull)
+                .filter(displayURLProvider -> providerName.equals(displayURLProvider.getName()))
+                .findFirst()
+                .orElse(null);
 
-                    return displayURLProvider.getName().equals(providerName);
-                }
-            });
-
-            DisplayURLProvider provider = Iterables.getFirst(filtered, null);
-            if(provider != null) {
+            if (provider != null) {
                 return provider;
             }
         }
 
         return lookupProvider();
     }
+
     DisplayURLProvider lookupProvider() {
         PreferredProviderUserProperty prefProperty = getUserPreferredProviderProperty();
 
@@ -74,9 +69,12 @@ public abstract class AbstractDisplayAction implements Action {
         }
         DisplayURLProvider displayURLProvider = DisplayURLProvider.getPreferredProvider();
         if (displayURLProvider == null) {
-            Iterable<DisplayURLProvider> all = DisplayURLProvider.all();
-            Iterable<DisplayURLProvider> availableProviders = Iterables.filter(all, Predicates.not(Predicates.instanceOf(ClassicDisplayURLProvider.class)));
-            displayURLProvider = Iterables.getFirst(availableProviders, DisplayURLProvider.getDefault());
+            ExtensionList<DisplayURLProvider> all = DisplayURLProvider.all();
+            displayURLProvider = all.stream()
+                .filter(
+                    ((Predicate<DisplayURLProvider>) ClassicDisplayURLProvider.class::isInstance)
+                        .negate())
+                .findFirst().orElse(DisplayURLProvider.getDefault());
         }
         return displayURLProvider;
     }

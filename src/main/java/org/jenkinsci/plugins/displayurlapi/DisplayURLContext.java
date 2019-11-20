@@ -1,5 +1,7 @@
 package org.jenkinsci.plugins.displayurlapi;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.PluginManager;
@@ -12,8 +14,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.Stack;
+import java.util.concurrent.TimeUnit;
+
 import jenkins.model.Jenkins;
 
 /**
@@ -29,11 +34,20 @@ public class DisplayURLContext implements Closeable {
     /**
      * The current thread's context.
      */
-    private static ThreadLocal<Stack<DisplayURLContext>> context = new ThreadLocal<Stack<DisplayURLContext>>();
+    private static ThreadLocal<Stack<DisplayURLContext>> context = new ThreadLocal<>();
+
+    private static final Cache<String, Optional<PluginWrapper>> CACHE =
+        CacheBuilder.newBuilder()
+            .maximumSize(Integer.getInteger( DisplayURLContext.class.getName() + ".cache.size", 1000))
+            // cache ttl default 5 minutes
+            .expireAfterAccess( Integer.getInteger( DisplayURLContext.class.getName() + ".cache.ttl", 300000), TimeUnit.MILLISECONDS)
+            //.weakValues() not sure we need this as entries are pluginWrapper will never be garbaged
+            .build();
+
     /**
      * Class names that we expect to be in the stack trace for calls to {@link #open()}.
      */
-    private static Set<String> ourPluginClassNames = new HashSet<String>(Arrays.asList(
+    private static Set<String> ourPluginClassNames = new HashSet<>(Arrays.asList(
             DisplayURLContext.class.getName(),
             DisplayURLProvider.class.getName(),
             DisplayURLProvider.DisplayURLProviderImpl.class.getName()
@@ -88,24 +102,56 @@ public class DisplayURLContext implements Closeable {
      */
     private void guessPlugin() {
         StackTraceElement[] stack = (new Throwable()).getStackTrace();
-        PluginManager manager = Jenkins.getActiveInstance().getPluginManager();
+        PluginManager manager = Jenkins.getInstance().getPluginManager();
         ClassLoader loader = manager.uberClassLoader;
         for (StackTraceElement frame : stack) {
             String cname = frame.getClassName();
             if (ourPluginClassNames.contains(cname)) {
                 continue;
             }
-            try {
-                Class<?> clazz = loader.loadClass(cname);
-                PluginWrapper wrapper = manager.whichPlugin(clazz);
-                if (wrapper != null && !OUR_PLUGIN_NAME.equals(wrapper.getShortName())) {
-                    plugin = wrapper;
-                    break;
+            Optional<PluginWrapper> wrapper = CACHE.getIfPresent( cname);
+            if(wrapper != null){
+                if(wrapper.isPresent()){
+                    plugin = wrapper.get();
                 }
-            } catch (ClassNotFoundException e) {
-                // ignore, it's not a plugin
+            } else
+            {
+                try {
+                    Class<?> clazz = loader.loadClass( cname );
+                    PluginWrapper pluginWrapper = manager.whichPlugin( clazz );
+                    if ( pluginWrapper != null && !OUR_PLUGIN_NAME.equals( pluginWrapper.getShortName() ) ) {
+                        plugin = pluginWrapper;
+                        CACHE.put( cname, Optional.of( pluginWrapper ) );
+                        break;
+                    } else {
+                        CACHE.put( cname, Optional.empty() );
+                    }
+                } catch ( ClassNotFoundException e ) {
+                    // ignore, it's not a plugin
+                }
             }
         }
+    }
+
+
+    /**
+     * Opens a {@link DisplayURLContext} for the current thread.
+     * @param guessPlugin try to infer the current plugin (resource intensive as requires a stack trace and class loading). Use {@code false} if you know the caller will always be Jenkins core.
+     * @return the {@link DisplayURLContext}.
+     */
+    @NonNull
+    public static DisplayURLContext open(boolean guessPlugin) {
+        Stack<DisplayURLContext> stack = DisplayURLContext.context.get();
+        if (stack == null) {
+            stack = new Stack<>();
+            DisplayURLContext.context.set(stack);
+        }
+        DisplayURLContext context = new DisplayURLContext(stack.isEmpty() ? null : stack.peek());
+        if (stack.isEmpty() && guessPlugin) {
+            context.guessPlugin();
+        }
+        stack.push(context);
+        return context;
     }
 
     /**
@@ -115,17 +161,7 @@ public class DisplayURLContext implements Closeable {
      */
     @NonNull
     public static DisplayURLContext open() {
-        Stack<DisplayURLContext> stack = DisplayURLContext.context.get();
-        if (stack == null) {
-            stack = new Stack<DisplayURLContext>();
-            DisplayURLContext.context.set(stack);
-        }
-        DisplayURLContext context = new DisplayURLContext(stack.isEmpty() ? null : stack.peek());
-        if (stack.isEmpty()) {
-            context.guessPlugin();
-        }
-        stack.push(context);
-        return context;
+        return open(true);
     }
 
     /**
@@ -225,7 +261,7 @@ public class DisplayURLContext implements Closeable {
     @NonNull
     public DisplayURLContext attribute(String name, String value) {
         if (this.attributes == null) {
-            this.attributes = new HashMap<String, String>();
+            this.attributes = new HashMap<>();
         }
         this.attributes.put(name, value);
         return this;

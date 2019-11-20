@@ -1,6 +1,7 @@
 package org.jenkinsci.plugins.displayurlapi.actions;
 
 import com.google.common.collect.ImmutableList;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.model.Action;
 import hudson.model.Run;
@@ -9,10 +10,10 @@ import org.jenkinsci.plugins.displayurlapi.DisplayURLProvider;
 import org.kohsuke.stapler.Stapler;
 import org.kohsuke.stapler.StaplerRequest;
 
-import javax.annotation.Nonnull;
 import java.util.Collection;
 
 public class RunDisplayAction extends AbstractDisplayAction {
+
     private final Run run;
 
     protected RunDisplayAction(Run run) {
@@ -34,14 +35,15 @@ public class RunDisplayAction extends AbstractDisplayAction {
 
     @Extension
     public static class TransientActionFactoryImpl extends TransientActionFactory {
+
         @Override
         public Class type() {
             return Run.class;
         }
 
-        @Nonnull
+        @NonNull
         @Override
-        public Collection<? extends Action> createFor(@Nonnull Object target) {
+        public Collection<? extends Action> createFor(@NonNull Object target) {
             return ImmutableList.of(new RunDisplayAction((Run) target));
         }
     }
