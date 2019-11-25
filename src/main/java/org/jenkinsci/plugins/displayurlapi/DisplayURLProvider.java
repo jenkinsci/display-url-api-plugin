@@ -116,46 +116,32 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
             }
         }
 
-        @Override
-        public String getArtifactsURL(Run<?, ?> run) {
+        private String getPageURL(Run<?, ?> run, String page) {
             DisplayURLContext ctx = DisplayURLContext.open();
             try {
                 if (ctx.run() == null) {
                     // the link might be generated from another run so we only add this to the context if unset
                     ctx.run(run);
                 }
-                return DisplayURLDecorator.decorate(ctx, super.getRunURL(run) + DISPLAY_POSTFIX + "?page=artifacts");
+                return DisplayURLDecorator.decorate(ctx, super.getRunURL(run) + DISPLAY_POSTFIX + "?page=" + page);
             } finally {
                 ctx.close();
             }
+        }
+
+        @Override
+        public String getArtifactsURL(Run<?, ?> run) {
+            return getPageURL(run, "artifacts");
         }
 
         @Override
         public String getChangesURL(Run<?, ?> run) {
-            DisplayURLContext ctx = DisplayURLContext.open();
-            try {
-                if (ctx.run() == null) {
-                    // the link might be generated from another run so we only add this to the context if unset
-                    ctx.run(run);
-                }
-                return DisplayURLDecorator.decorate(ctx, super.getRunURL(run) + DISPLAY_POSTFIX + "?page=changes");
-            } finally {
-                ctx.close();
-            }
+            return getPageURL(run, "changes");
         }
 
         @Override
         public String getTestsURL(Run<?, ?> run) {
-            DisplayURLContext ctx = DisplayURLContext.open();
-            try {
-                if (ctx.run() == null) {
-                    // the link might be generated from another run so we only add this to the context if unset
-                    ctx.run(run);
-                }
-                return DisplayURLDecorator.decorate(ctx, super.getRunURL(run) + DISPLAY_POSTFIX + "?page=tests");
-            } finally {
-                ctx.close();
-            }
+            return getPageURL(run, "tests");
         }
 
         @Override
