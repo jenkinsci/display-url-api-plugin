@@ -69,17 +69,6 @@ public class ActionRedirectExtendedTest extends AbstractActionRedirectTest {
     }
 
     @Test
-    public void testRedirectForTestsURLWithClassicTestsFolder() throws Exception {
-        System.setProperty("jenkins.classic.displayurl.tests.folder", "folder");
-        given()
-            .urlEncodingEnabled(false)
-            .redirects().follow(false)
-            .when().get(provider.getTestsURL(run)).then()
-            .statusCode(HttpServletResponse.SC_MOVED_TEMPORARILY)
-            .header("Location", getRedirectedProvider().getTestsURL(run));
-    }
-
-    @Test
     public void testRedirectForYetAnotherProviderParameter() throws Exception {
         given()
             .urlEncodingEnabled(false)
@@ -98,13 +87,6 @@ public class ActionRedirectExtendedTest extends AbstractActionRedirectTest {
         assertEquals(root + "job/my%20folder/job/my%20job/1/artifactanother", getRedirectedProvider().getArtifactsURL(run));
         assertEquals(root + "job/my%20folder/job/my%20job/changesanother", getRedirectedProvider().getChangesURL(run));
         assertEquals(root + "job/my%20folder/job/my%20job/1/testReportanother", getRedirectedProvider().getTestsURL(run));
-    }
-
-    @Test
-    public void testUrlsTestsFolder() throws Exception {
-        System.setProperty("jenkins.classic.displayurl.tests.folder", "folder");
-        String root = DisplayURLProvider.get().getRoot();
-        assertEquals(root + "job/my%20folder/job/my%20job/1/folderanother", getRedirectedProvider().getTestsURL(run));
     }
 
 

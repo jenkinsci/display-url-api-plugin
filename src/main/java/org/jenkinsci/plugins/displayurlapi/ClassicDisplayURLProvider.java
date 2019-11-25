@@ -5,7 +5,6 @@ import hudson.Extension;
 import hudson.Util;
 import hudson.model.Job;
 import hudson.model.Run;
-import org.apache.commons.lang.StringUtils;
 
 /**
  * Display URL Provider for the Classical Jenkins UI
@@ -40,7 +39,7 @@ public class ClassicDisplayURLProvider extends DisplayURLProvider {
     @Override
     @NonNull
     public String getTestsURL(Run<?, ?> run) {
-        return getRunURL(run) + this.getTestsFolder();
+        return getRunURL(run) + "testReport";
     }
 
     @Override
@@ -48,14 +47,4 @@ public class ClassicDisplayURLProvider extends DisplayURLProvider {
     public String getJobURL(Job<?, ?> job) {
         return getRoot() + Util.encode(job.getUrl());
     }
-
-    private String getTestsFolder() {
-        String folder = System.getProperty(JENKINS_CLASSIC_DISPLAYURL_TESTS_FOLDER_PROP);
-        if (StringUtils.isEmpty(folder)) {
-            folder = "testReport";
-        }
-        return folder;
-    }
-
-    private static final String JENKINS_CLASSIC_DISPLAYURL_TESTS_FOLDER_PROP = "jenkins.classic.displayurl.tests.folder";
 }
