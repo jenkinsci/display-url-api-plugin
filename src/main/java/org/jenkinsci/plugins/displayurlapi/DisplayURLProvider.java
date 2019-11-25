@@ -180,6 +180,7 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
         }
         return clazz;
     }
+
     @Nullable
     public static DisplayURLProvider getPreferredProvider() {
         String clazz = findClass();
