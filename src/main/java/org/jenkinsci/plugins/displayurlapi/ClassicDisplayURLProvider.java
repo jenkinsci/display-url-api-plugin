@@ -48,16 +48,12 @@ public class ClassicDisplayURLProvider extends DisplayURLProvider {
     }
 
     private String getTestsFolder() {
-        String folder = System.getenv(JENKINS_CLASSIC_DISPLAYURL_TESTS_FOLDER_ENV);
-        if (StringUtils.isEmpty(folder)) {
-            folder = System.getProperty(JENKINS_CLASSIC_DISPLAYURL_TESTS_FOLDER_PROP);
-        }
+        String folder = System.getProperty(JENKINS_CLASSIC_DISPLAYURL_TESTS_FOLDER_PROP);
         if (StringUtils.isEmpty(folder)) {
             folder = "testReport";
         }
         return folder;
     }
 
-    private static final String JENKINS_CLASSIC_DISPLAYURL_TESTS_FOLDER_ENV = "JENKINS_CLASSIC_DISPLAYURL_TESTS_FOLDER";
     private static final String JENKINS_CLASSIC_DISPLAYURL_TESTS_FOLDER_PROP = "jenkins.classic.displayurl.tests.folder";
 }
