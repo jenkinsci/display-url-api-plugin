@@ -75,7 +75,9 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
     /**
      * Fully qualified URL for a page that displays artifacts for a Run.
      */
-    public abstract String getArtifactsURL(Run<?, ?> run);
+    public String getArtifactsURL(Run<?, ?> run) {
+        return getRunURL(run) + "artifact";
+    }
 
     /**
      * Fully qualified URL for a page that displays changes for a project.
