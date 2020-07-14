@@ -123,6 +123,16 @@ public class ActionRedirectEligibilityTest extends AbstractActionRedirectTest {
         }
 
         @Override
+        public String getTestsURL(Run<?, ?> run) {
+            return ELIGIBLE_IN_URL;
+        }
+
+        @Override
+        public String getArtifactsURL(Run<?, ?> run) {
+            return ELIGIBLE_IN_URL;
+        }
+
+        @Override
         public String getJobURL(Job<?, ?> project) {
             return ELIGIBLE_IN_URL;
         }

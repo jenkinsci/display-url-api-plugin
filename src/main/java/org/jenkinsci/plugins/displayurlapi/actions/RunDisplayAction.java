@@ -25,8 +25,21 @@ public class RunDisplayAction extends AbstractDisplayAction {
         StaplerRequest req = Stapler.getCurrentRequest();
         String page = req.getParameter("page");
         String url;
-        if ("changes".equals(page)) {
-            url = provider.getChangesURL(run);
+        if (page != null) {
+            switch (page) {
+                case "artifacts":
+                    url = provider.getArtifactsURL(run);
+                    break;
+                case "changes":
+                    url = provider.getChangesURL(run);
+                    break;
+                case "tests":
+                    url = provider.getTestsURL(run);
+                    break;
+                default:
+                    url = provider.getRunURL(run);
+                    break;
+            }
         } else {
             url = provider.getRunURL(run);
         }

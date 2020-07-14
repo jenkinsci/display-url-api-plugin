@@ -82,10 +82,23 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
     public abstract String getRunURL(Run<?, ?> run);
 
     /**
+     * Fully qualified URL for a page that displays artifacts for a Run.
+     */
+    @NonNull
+    public String getArtifactsURL(Run<?, ?> run) {
+        return getRunURL(run) + "artifact";
+    }
+
+    /**
      * Fully qualified URL for a page that displays changes for a project.
      */
     @NonNull
     public abstract String getChangesURL(Run<?, ?> run);
+
+    /**
+     * Fully qualified URL for a page that displays tests for a Run.
+     */
+    public abstract String getTestsURL(Run<?, ?> run);
 
     /**
      * Fully qualified URL for a Jobs home
@@ -115,17 +128,34 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
             }
         }
 
-        @Override
         @NonNull
-        public String getChangesURL(Run<?, ?> run) {
+        private String getPageURL(Run<?, ?> run, String page) {
             try (DisplayURLContext ctx = DisplayURLContext.open()) {
                 if (ctx.run() == null) {
                     // the link might be generated from another run so we only add this to the context if unset
                     ctx.run(run);
                 }
                 return DisplayURLDecorator
-                    .decorate(ctx, super.getRunURL(run) + DISPLAY_POSTFIX + "?page=changes");
+                    .decorate(ctx, super.getRunURL(run) + DISPLAY_POSTFIX + "?page=" + page);
             }
+        }
+
+        @Override
+        @NonNull
+        public String getArtifactsURL(Run<?, ?> run) {
+            return getPageURL(run, "artifacts");
+        }
+
+        @Override
+        @NonNull
+        public String getChangesURL(Run<?, ?> run) {
+            return getPageURL(run, "changes");
+        }
+
+        @Override
+        @NonNull
+        public String getTestsURL(Run<?, ?> run) {
+            return getPageURL(run, "tests");
         }
 
         @Override

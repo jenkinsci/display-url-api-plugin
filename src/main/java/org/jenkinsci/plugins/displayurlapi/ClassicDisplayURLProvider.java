@@ -38,6 +38,12 @@ public class ClassicDisplayURLProvider extends DisplayURLProvider {
 
     @Override
     @NonNull
+    public String getTestsURL(Run<?, ?> run) {
+        return getRunURL(run) + "testReport";
+    }
+
+    @Override
+    @NonNull
     public String getJobURL(Job<?, ?> job) {
         return getRoot() + Util.encode(job.getUrl());
     }
