@@ -9,7 +9,7 @@
   </parent>
 
   <artifactId>display-url-api</artifactId>
-  <version>${revision}${changelist}</version>
+  <version>2.3.3</version>
   <packaging>hpi</packaging>
 
   <properties>
