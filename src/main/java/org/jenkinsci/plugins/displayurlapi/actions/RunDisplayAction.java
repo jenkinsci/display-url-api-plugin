@@ -11,13 +11,36 @@ import org.kohsuke.stapler.Stapler;
 import org.kohsuke.stapler.StaplerRequest;
 
 import java.util.Collection;
+import org.kohsuke.stapler.export.Exported;
+import org.kohsuke.stapler.export.ExportedBean;
 
+@ExportedBean(defaultVisibility = 0)
 public class RunDisplayAction extends AbstractDisplayAction {
 
     private final Run run;
 
     protected RunDisplayAction(Run run) {
         this.run = run;
+    }
+
+    @Exported(visibility = 1)
+    public String getArtifactsUrl() {
+        return lookupProvider().getArtifactsURL(run);
+    }
+
+    @Exported(visibility = 1)
+    public String getChangesUrl() {
+        return lookupProvider().getChangesURL(run);
+    }
+
+    @Exported(visibility = 1)
+    public String getTestsUrl() {
+        return lookupProvider().getTestsURL(run);
+    }
+
+    @Exported(visibility = 1)
+    public String getDisplayUrl() {
+        return lookupProvider().getRunURL(run);
     }
 
     @Override
@@ -47,7 +70,7 @@ public class RunDisplayAction extends AbstractDisplayAction {
     }
 
     @Extension
-    public static class TransientActionFactoryImpl extends TransientActionFactory {
+    public static class TransientActionFactoryImpl extends TransientActionFactory<Run> {
 
         @Override
         public Class type() {
@@ -56,8 +79,8 @@ public class RunDisplayAction extends AbstractDisplayAction {
 
         @NonNull
         @Override
-        public Collection<? extends Action> createFor(@NonNull Object target) {
-            return ImmutableList.of(new RunDisplayAction((Run) target));
+        public Collection<? extends Action> createFor(@NonNull Run target) {
+            return ImmutableList.of(new RunDisplayAction(target));
         }
     }
 }

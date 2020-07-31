@@ -98,7 +98,9 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
     /**
      * Fully qualified URL for a page that displays tests for a Run.
      */
-    public abstract String getTestsURL(Run<?, ?> run);
+    public String getTestsURL(Run<?, ?> run) {
+        return getRunURL(run) + "testReport";
+    };
 
     /**
      * Fully qualified URL for a Jobs home
