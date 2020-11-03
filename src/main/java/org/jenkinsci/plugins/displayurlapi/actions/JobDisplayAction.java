@@ -9,13 +9,21 @@ import jenkins.model.TransientActionFactory;
 import org.jenkinsci.plugins.displayurlapi.DisplayURLProvider;
 
 import java.util.Collection;
+import org.kohsuke.stapler.export.Exported;
+import org.kohsuke.stapler.export.ExportedBean;
 
+@ExportedBean(defaultVisibility = 0)
 public class JobDisplayAction extends AbstractDisplayAction {
 
     private final Job job;
 
     JobDisplayAction(Job job) {
         this.job = job;
+    }
+
+    @Exported(visibility = 1)
+    public String getDisplayUrl() {
+        return lookupProvider().getJobURL(job);
     }
 
     protected String getRedirectURL(DisplayURLProvider provider) {
