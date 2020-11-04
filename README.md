@@ -13,4 +13,4 @@ URLs can be requested/extended for these UI locations:
 -   Test result.
 
 ##  Version history
-Please refer to the [changelog](CHANGELOG.md)
+From 2.3.3 please look at (https://github.com/jenkinsci/display-url-api-plugin/releases) for older versions please refer to the [changelog](CHANGELOG.md)
