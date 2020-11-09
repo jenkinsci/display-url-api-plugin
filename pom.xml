@@ -104,11 +104,11 @@
       </exclusions>
     </dependency>
     <dependency>
-      <!-- forcing 2.3.0 in dep for rest-assured to avoid systemPath issue on JDK11,
+      <!-- forcing 2.3.1 in dep for rest-assured to avoid systemPath issue on JDK11,
       see https://github.com/jenkinsci/jaxb-plugin/pull/6 for more information -->
       <groupId>javax.xml.bind</groupId>
       <artifactId>jaxb-api</artifactId>
-      <version>2.3.0</version>
+      <version>2.3.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
