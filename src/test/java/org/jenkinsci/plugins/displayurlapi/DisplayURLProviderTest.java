@@ -7,19 +7,17 @@ import hudson.PluginWrapper;
 import hudson.model.FreeStyleProject;
 import hudson.model.Job;
 import hudson.model.Run;
-import java.util.HashMap;
-import java.util.Map;
-
 import hudson.model.User;
+import hudson.security.ACL;
 import jenkins.model.Jenkins;
-import org.acegisecurity.Authentication;
-import org.acegisecurity.context.SecurityContextHolder;
-import org.acegisecurity.providers.UsernamePasswordAuthenticationToken;
 import org.jenkinsci.plugins.displayurlapi.user.PreferredProviderUserProperty;
 import org.junit.Rule;
 import org.junit.Test;
 import org.jvnet.hudson.test.MockFolder;
 import org.jvnet.hudson.test.TestExtension;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
@@ -176,13 +174,13 @@ public class DisplayURLProviderTest {
 
     @Test
     public void urlsWithUserDefinedProvider() throws Exception {
+        rule.jenkins.setSecurityRealm(rule.createDummySecurityRealm());
         User foo = User.getById("foo", true);
+
         PreferredProviderUserProperty userProperty =
             new PreferredProviderUserProperty(TestUserDisplayURLProvider.class.getName());
         foo.addProperty(userProperty);
-        Authentication previous = SecurityContextHolder.getContext().getAuthentication();
-        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(foo, null));
-        User.current().getProperty(PreferredProviderUserProperty.class);
+        ACL.as(foo);
 
         MockFolder folder = rule.createFolder("my folder");
         FreeStyleProject project = (FreeStyleProject) folder
@@ -209,7 +207,6 @@ public class DisplayURLProviderTest {
         assertEquals(DisplayURLProvider.get().getChangesURL(run), environment.get("RUN_CHANGES_DISPLAY_URL"));
         assertEquals(DisplayURLProvider.get().getTestsURL(run), environment.get("RUN_TESTS_DISPLAY_URL"));
         assertEquals(DisplayURLProvider.get().getJobURL(project), environment.get("JOB_DISPLAY_URL"));
-        SecurityContextHolder.getContext().setAuthentication(previous);
     }
 
 
