@@ -80,9 +80,12 @@ public abstract class AbstractDisplayAction implements Action {
     }
 
     @VisibleForTesting
+    @Deprecated
+    /**
+     * @deprecated use
+     */
     protected PreferredProviderUserProperty getUserPreferredProviderProperty() {
-        User user = User.current();
-        return (user == null) ? null : user.getProperty(PreferredProviderUserProperty.class);
+        return DisplayURLProvider.getUserPreferredProviderProperty();
     }
 
 }

@@ -1,5 +1,6 @@
 package org.jenkinsci.plugins.displayurlapi;
 
+import com.google.common.annotations.VisibleForTesting;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import hudson.ExtensionList;
@@ -7,9 +8,11 @@ import hudson.ExtensionPoint;
 import hudson.Util;
 import hudson.model.Job;
 import hudson.model.Run;
+import hudson.model.User;
 import jenkins.model.Jenkins;
 import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.plugins.displayurlapi.actions.AbstractDisplayAction;
+import org.jenkinsci.plugins.displayurlapi.user.PreferredProviderUserProperty;
 
 import static org.apache.commons.lang.StringUtils.isNotEmpty;
 
@@ -26,7 +29,8 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
      * @return DisplayURLProvider
      */
     public static DisplayURLProvider get() {
-        return DisplayURLProviderImpl.INSTANCE;
+        DisplayURLProvider preferredProvider = getPreferredProvider();
+        return preferredProvider != null ? preferredProvider : DisplayURLProviderImpl.INSTANCE;
     }
 
     /**
@@ -52,7 +56,7 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
      */
     @NonNull
     public String getRoot() {
-        String root = Jenkins.getInstance().getRootUrl();
+        String root = Jenkins.get().getRootUrl();
         if (root == null) {
             root = "http://unconfigured-jenkins-location/";
         }
@@ -181,11 +185,22 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
 
     @Nullable
     public static DisplayURLProvider getPreferredProvider() {
+        PreferredProviderUserProperty prefProperty = getUserPreferredProviderProperty();
+
+        if (prefProperty != null && prefProperty.getConfiguredProvider() != null) {
+            return prefProperty.getConfiguredProvider();
+        }
         String clazz = findClass();
         if (isNotEmpty(clazz)) {
             return ExtensionList.lookup(DisplayURLProvider.class).getDynamic(clazz);
         }
         return null;
+    }
+
+    @Nullable
+    public static PreferredProviderUserProperty getUserPreferredProviderProperty() {
+        User user = User.current();
+        return (user == null) ? null : user.getProperty(PreferredProviderUserProperty.class);
     }
 
     private static final String JENKINS_DISPLAYURL_PROVIDER_ENV = "JENKINS_DISPLAYURL_PROVIDER";
