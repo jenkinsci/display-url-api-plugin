@@ -17,6 +17,7 @@
     <changelist>-SNAPSHOT</changelist>
     <jenkins.version>2.176.4</jenkins.version>
     <java.level>8</java.level>
+    <hamcrest.version>2.2</hamcrest.version>
   </properties>
 
   <name>Display URL API</name>
@@ -77,6 +78,11 @@
         <version>4.13.1</version>
         <scope>test</scope>
       </dependency>
+      <dependency>
+        <groupId>org.hamcrest</groupId>
+        <artifactId>hamcrest</artifactId>
+        <version>${hamcrest.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -89,7 +95,7 @@
     <dependency>
       <groupId>io.rest-assured</groupId>
       <artifactId>rest-assured</artifactId>
-      <version>3.3.0</version>
+      <version>4.3.2</version>
       <scope>test</scope>
       <exclusions>
         <exclusion>
@@ -113,13 +119,14 @@
     <dependency>
       <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest-core</artifactId>
-      <version>2.2</version>
+      <version>${hamcrest.version}</version>
       <scope>test</scope>
     </dependency>
+    <!-- upperbound dependency -->
     <dependency>
       <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest-library</artifactId>
-      <version>2.2</version>
+      <version>${hamcrest.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
