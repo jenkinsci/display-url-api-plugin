@@ -1,0 +1,18 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:t="/lib/hudson">
+    <t:buildEnvVar name="JOB_DISPLAY_URL">
+        <j:out value="${%desc.JOB_DISPLAY_URL}"/>
+    </t:buildEnvVar>
+    <t:buildEnvVar name="RUN_DISPLAY_URL">
+        <j:out value="${%desc.RUN_DISPLAY_URL}" />
+    </t:buildEnvVar>
+    <t:buildEnvVar name="RUN_ARTIFACTS_DISPLAY_URL">
+        <j:out value="${%desc.RUN_ARTIFACTS_DISPLAY_URL}" />
+    </t:buildEnvVar>
+    <t:buildEnvVar name="RUN_CHANGES_DISPLAY_URL">
+        <j:out value="${%desc.RUN_CHANGES_DISPLAY_URL}" />
+    </t:buildEnvVar>
+    <t:buildEnvVar name="RUN_TESTS_DISPLAY_URL">
+        <j:out value="${%desc.RUN_TESTS_DISPLAY_URL}" />
+    </t:buildEnvVar>
+</j:jelly>
