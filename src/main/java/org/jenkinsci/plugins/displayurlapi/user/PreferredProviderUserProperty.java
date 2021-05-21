@@ -3,9 +3,12 @@ package org.jenkinsci.plugins.displayurlapi.user;
 import com.google.common.collect.ImmutableList;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import hudson.Extension;
+import hudson.model.User;
 import hudson.model.UserProperty;
 import hudson.model.UserPropertyDescriptor;
+
 import java.util.stream.Collectors;
+
 import org.jenkinsci.plugins.displayurlapi.DisplayURLProvider;
 import org.kohsuke.stapler.DataBoundConstructor;
 
@@ -28,6 +31,19 @@ public class PreferredProviderUserProperty extends UserProperty {
         final DisplayURLProvider provider = getConfiguredProvider();
         return provider == null ? ProviderOption.DEFAULT_OPTION
             : new ProviderOption(provider.getClass().getName(), provider.getDisplayName());
+    }
+
+    public static PreferredProviderUserProperty forCurrentUser() {
+        final User current = User.current();
+        if (current == null) {
+            return (PreferredProviderUserProperty) DESCRIPTOR.newInstance((User) null);
+        }
+
+        PreferredProviderUserProperty property = current.getProperty(PreferredProviderUserProperty.class);
+        if (property == null) {
+            return (PreferredProviderUserProperty) DESCRIPTOR.newInstance(current);
+        }
+        return property;
     }
 
     public DisplayURLProvider getConfiguredProvider() {

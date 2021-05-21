@@ -3,18 +3,7 @@
          xmlns:t="/lib/hudson" xmlns:f="/lib/form">
   <f:block>
     <f:entry field="providerId">
-        <select class="setting-input dropdownList" name="providerId">
-            <j:forEach var="provider" items="${instance.all}">
-                <j:choose>
-                   <j:when test="${instance.isSelected(provider.getId())}">
-                     <option value="${provider.getId()}" selected="true">${provider.getName()}</option>
-                   </j:when>
-                   <j:otherwise>
-                     <option value="${provider.getId()}">${provider.getName()}</option>
-                   </j:otherwise>
-                </j:choose>
-            </j:forEach>
-        </select>
+        <f:select/>
     </f:entry>
   </f:block>
 </j:jelly>
