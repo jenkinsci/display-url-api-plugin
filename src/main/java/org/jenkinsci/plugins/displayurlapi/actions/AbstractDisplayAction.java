@@ -3,7 +3,6 @@ package org.jenkinsci.plugins.displayurlapi.actions;
 import com.google.common.annotations.VisibleForTesting;
 import hudson.ExtensionList;
 import hudson.model.Action;
-import hudson.model.User;
 import java.util.Objects;
 import java.util.function.Predicate;
 import org.apache.commons.lang.StringUtils;

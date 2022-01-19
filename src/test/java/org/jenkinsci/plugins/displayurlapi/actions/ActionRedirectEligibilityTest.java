@@ -30,7 +30,7 @@ public class ActionRedirectEligibilityTest extends AbstractActionRedirectTest {
     }
 
     @Test
-    public void testUserChooseImplementation() throws Exception {
+    public void testUserChooseImplementation() {
         // no user then different than Classic
         propToUse = null;
         given()
@@ -70,7 +70,7 @@ public class ActionRedirectEligibilityTest extends AbstractActionRedirectTest {
     }
 
     @Test
-    public void testUserDefaultImplementation() throws Exception {
+    public void testUserDefaultImplementation() {
         assertThat(DisplayURLProvider.getDefault(), Matchers.instanceOf(ClassicDisplayURLProvider.class));
 
         System.setProperty("jenkins.displayurl.provider", EligibleDisplayURLProvider.class.getName());
@@ -81,7 +81,7 @@ public class ActionRedirectEligibilityTest extends AbstractActionRedirectTest {
     }
 
     @Test
-    public void testUserDefaultImplementationForRedirection() throws Exception {
+    public void testUserDefaultImplementationForRedirection() {
         //set Classic provider
         System.setProperty("jenkins.displayurl.provider", ClassicDisplayURLProvider.class.getName());
         given()

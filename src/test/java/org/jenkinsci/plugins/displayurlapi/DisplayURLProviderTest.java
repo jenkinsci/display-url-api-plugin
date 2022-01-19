@@ -267,7 +267,7 @@ public class DisplayURLProviderTest {
         @NonNull
         @Override
         protected Map<String, String> parameters(@NonNull DisplayURLContext context) {
-            Map<String, String> result = new HashMap<String, String>();
+            Map<String, String> result = new HashMap<>();
             PluginWrapper wrapper = context.plugin();
             result.put("utm_source", "Jenkins");
             result.put("utm_campaign", wrapper == null ? "jenkins" : wrapper.getShortName());
