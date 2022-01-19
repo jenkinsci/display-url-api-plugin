@@ -109,11 +109,9 @@ public class DisplayURLContext implements Closeable {
             if (ourPluginClassNames.contains(cname)) {
                 continue;
             }
-            Optional<PluginWrapper> wrapper = CACHE.getIfPresent( cname);
+            Optional<PluginWrapper> wrapper = CACHE.getIfPresent(cname);
             if(wrapper != null){
-                if(wrapper.isPresent()){
-                    plugin = wrapper.get();
-                }
+                wrapper.ifPresent(pluginWrapper -> plugin = pluginWrapper);
             } else
             {
                 try {
