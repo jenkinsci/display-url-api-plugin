@@ -1,8 +1,6 @@
 package org.jenkinsci.plugins.displayurlapi.actions;
 
-import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 import hudson.model.Action;
 import hudson.model.Job;
 import hudson.model.Run;
@@ -12,7 +10,6 @@ import org.jenkinsci.plugins.displayurlapi.ClassicDisplayURLProvider;
 import org.jenkinsci.plugins.displayurlapi.DisplayURLProvider;
 import org.jenkinsci.plugins.displayurlapi.user.PreferredProviderUserProperty;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Test;
 import org.jvnet.hudson.test.TestExtension;
 
@@ -21,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Collection;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ActionRedirectEligibilityTest extends AbstractActionRedirectTest {
 
@@ -73,13 +71,13 @@ public class ActionRedirectEligibilityTest extends AbstractActionRedirectTest {
 
     @Test
     public void testUserDefaultImplementation() throws Exception {
-        Assert.assertThat(DisplayURLProvider.getDefault(), Matchers.instanceOf(ClassicDisplayURLProvider.class));
+        assertThat(DisplayURLProvider.getDefault(), Matchers.instanceOf(ClassicDisplayURLProvider.class));
 
         System.setProperty("jenkins.displayurl.provider", EligibleDisplayURLProvider.class.getName());
-        Assert.assertThat(DisplayURLProvider.getDefault(), Matchers.instanceOf(EligibleDisplayURLProvider.class));
+        assertThat(DisplayURLProvider.getDefault(), Matchers.instanceOf(EligibleDisplayURLProvider.class));
 
         System.setProperty("jenkins.displayurl.provider", ClassicDisplayURLProvider.class.getName());
-        Assert.assertThat(DisplayURLProvider.getDefault(), Matchers.instanceOf(ClassicDisplayURLProvider.class));
+        assertThat(DisplayURLProvider.getDefault(), Matchers.instanceOf(ClassicDisplayURLProvider.class));
     }
 
     @Test
