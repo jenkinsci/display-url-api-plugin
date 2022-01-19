@@ -78,11 +78,11 @@ public abstract class AbstractDisplayAction implements Action {
         return displayURLProvider;
     }
 
+    /**
+     * @deprecated use {@link DisplayURLProvider#getUserPreferredProviderProperty()}
+     */
     @VisibleForTesting
     @Deprecated
-    /**
-     * @deprecated use {@link DisplayURLProvider#getUserPReferredProviderProperty}
-     */
     protected PreferredProviderUserProperty getUserPreferredProviderProperty() {
         return DisplayURLProvider.getUserPreferredProviderProperty();
     }
