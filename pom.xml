@@ -17,12 +17,13 @@
     <changelist>-SNAPSHOT</changelist>
     <jenkins.version>2.332.1</jenkins.version>
     <java.level>8</java.level>
+    <gitHubRepo>jenkinsci/${project.artifactId}-plugin</gitHubRepo>
     <hamcrest.version>2.2</hamcrest.version>
   </properties>
 
   <name>Display URL API</name>
   <description>Provides the DisplayURLProvider extension point to provide alternate URLs for use in notifications</description>
-  <url>https://github.com/jenkinsci/display-url-api-plugin</url>
+  <url>https://github.com/jenkinsci/${project.artifactId}-plugin</url>
 
   <licenses>
     <license>
@@ -40,10 +41,10 @@
   </developers>
 
   <scm>
-    <connection>scm:git:git://github.com/jenkinsci/${project.artifactId}-plugin.git</connection>
-    <developerConnection>scm:git:git@github.com:jenkinsci/${project.artifactId}-plugin.git</developerConnection>
-    <url>http://github.com/jenkinsci/${project.artifactId}-plugin</url>
-    <tag>HEAD</tag>
+    <connection>scm:git:git://github.com/${gitHubRepo}.git</connection>
+    <developerConnection>scm:git:git@github.com:${gitHubRepo}.git</developerConnection>
+    <tag>${scmTag}</tag>
+    <url>https://github.com/${gitHubRepo}</url>
   </scm>
 
   <repositories>
