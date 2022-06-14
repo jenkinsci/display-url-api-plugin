@@ -66,18 +66,21 @@ public class DisplayURLProviderTest {
                 ClassicDisplayURLProvider.class.getName() );
         }
 
+        @NonNull
         @Override
         public String getRunURL( Run<?, ?> run )
         {
             return getRootProvider().getRunURL( run ) + EXTRA_CONTENT_IN_URL;
         }
 
+        @NonNull
         @Override
         public String getArtifactsURL( Run<?, ?> run )
         {
             return getRootProvider().getArtifactsURL( run ) + "/" + EXTRA_CONTENT_IN_URL;
         }
 
+        @NonNull
         @Override
         public String getChangesURL( Run<?, ?> run )
         {
@@ -90,6 +93,7 @@ public class DisplayURLProviderTest {
             return getRootProvider().getTestsURL( run ) + "/" + EXTRA_CONTENT_IN_URL;
         }
 
+        @NonNull
         @Override
         public String getJobURL( Job<?, ?> project )
         {
@@ -141,18 +145,21 @@ public class DisplayURLProviderTest {
                 ClassicDisplayURLProvider.class.getName() );
         }
 
+        @NonNull
         @Override
         public String getRunURL( Run<?, ?> run )
         {
             return getRootProvider().getRunURL( run ) + EXTRA_CONTENT_IN_URL;
         }
 
+        @NonNull
         @Override
         public String getArtifactsURL( Run<?, ?> run )
         {
             return getRootProvider().getArtifactsURL( run ) + "/" + EXTRA_CONTENT_IN_URL;
         }
 
+        @NonNull
         @Override
         public String getChangesURL( Run<?, ?> run )
         {
@@ -165,6 +172,7 @@ public class DisplayURLProviderTest {
             return getRootProvider().getTestsURL( run ) + "/" + EXTRA_CONTENT_IN_URL;
         }
 
+        @NonNull
         @Override
         public String getJobURL( Job<?, ?> project )
         {

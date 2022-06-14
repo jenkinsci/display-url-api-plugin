@@ -1,6 +1,7 @@
 package org.jenkinsci.plugins.displayurlapi.actions;
 
 import com.google.common.collect.ImmutableList;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.model.Action;
 import hudson.model.Job;
 import hudson.model.Run;
@@ -13,7 +14,6 @@ import org.junit.After;
 import org.junit.Test;
 import org.jvnet.hudson.test.TestExtension;
 
-import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Collection;
 
@@ -110,11 +110,13 @@ public class ActionRedirectEligibilityTest extends AbstractActionRedirectTest {
 
         public static final String ELIGIBLE_IN_URL = "http://eligible.com";
 
+        @NonNull
         @Override
         public String getRunURL(Run<?, ?> run) {
             return ELIGIBLE_IN_URL;
         }
 
+        @NonNull
         @Override
         public String getChangesURL(Run<?, ?> run) {
             return ELIGIBLE_IN_URL;
@@ -125,11 +127,13 @@ public class ActionRedirectEligibilityTest extends AbstractActionRedirectTest {
             return ELIGIBLE_IN_URL;
         }
 
+        @NonNull
         @Override
         public String getArtifactsURL(Run<?, ?> run) {
             return ELIGIBLE_IN_URL;
         }
 
+        @NonNull
         @Override
         public String getJobURL(Job<?, ?> project) {
             return ELIGIBLE_IN_URL;
@@ -143,9 +147,9 @@ public class ActionRedirectEligibilityTest extends AbstractActionRedirectTest {
             return Run.class;
         }
 
-        @Nonnull
+        @NonNull
         @Override
-        public Collection<? extends Action> createFor(@Nonnull Object target) {
+        public Collection<? extends Action> createFor(@NonNull Object target) {
             return ImmutableList.of(new MockRunDisplayAction((Run) target));
         }
     }

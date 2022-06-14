@@ -2,6 +2,7 @@ package org.jenkinsci.plugins.displayurlapi.actions;
 
 import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.model.Job;
 import hudson.model.Run;
 import org.jenkinsci.plugins.displayurlapi.DisplayURLProvider;
@@ -101,16 +102,19 @@ public class ActionRedirectExtendedTest extends AbstractActionRedirectTest {
 
         public static final String EXTRA_CONTENT_IN_URL = "another";
 
+        @NonNull
         @Override
         public String getRunURL(Run<?, ?> run) {
             return DisplayURLProvider.getDefault().getRunURL(run) + EXTRA_CONTENT_IN_URL;
         }
 
+        @NonNull
         @Override
         public String getArtifactsURL(Run<?, ?> run) {
             return DisplayURLProvider.getDefault().getArtifactsURL(run) + EXTRA_CONTENT_IN_URL;
         }
 
+        @NonNull
         @Override
         public String getChangesURL(Run<?, ?> run) {
             return DisplayURLProvider.getDefault().getChangesURL(run) + EXTRA_CONTENT_IN_URL;
@@ -121,6 +125,7 @@ public class ActionRedirectExtendedTest extends AbstractActionRedirectTest {
             return DisplayURLProvider.getDefault().getTestsURL(run) + EXTRA_CONTENT_IN_URL;
         }
 
+        @NonNull
         @Override
         public String getJobURL(Job<?, ?> project) {
             return DisplayURLProvider.getDefault().getJobURL(project) + EXTRA_CONTENT_IN_URL;
@@ -132,16 +137,19 @@ public class ActionRedirectExtendedTest extends AbstractActionRedirectTest {
 
         public static final String EXTRA_CONTENT_IN_URL = "yetanother";
 
+        @NonNull
         @Override
         public String getRunURL(Run<?, ?> run) {
             return DisplayURLProvider.getDefault().getRunURL(run) + EXTRA_CONTENT_IN_URL;
         }
 
+        @NonNull
         @Override
         public String getArtifactsURL(Run<?, ?> run) {
             return DisplayURLProvider.getDefault().getArtifactsURL(run) + EXTRA_CONTENT_IN_URL;
         }
 
+        @NonNull
         @Override
         public String getChangesURL(Run<?, ?> run) {
             return DisplayURLProvider.getDefault().getChangesURL(run) + EXTRA_CONTENT_IN_URL;
@@ -152,6 +160,7 @@ public class ActionRedirectExtendedTest extends AbstractActionRedirectTest {
             return DisplayURLProvider.getDefault().getTestsURL(run) + EXTRA_CONTENT_IN_URL;
         }
 
+        @NonNull
         @Override
         public String getJobURL(Job<?, ?> project) {
             return DisplayURLProvider.getDefault().getJobURL(project) + EXTRA_CONTENT_IN_URL;
