@@ -112,9 +112,7 @@ public abstract class DisplayURLDecorator implements ExtensionPoint {
         try {
             return URLEncoder.encode(value, "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            AssertionError ae = new AssertionError("UTF-8 encoding is mandated by the JLS");
-            ae.initCause(e);
-            throw ae;
+            throw new AssertionError("UTF-8 encoding is mandated by the JLS", e);
         }
     }
 

@@ -3,7 +3,6 @@ package org.jenkinsci.plugins.displayurlapi.actions;
 import com.google.common.annotations.VisibleForTesting;
 import hudson.ExtensionList;
 import hudson.model.Action;
-import hudson.model.User;
 import java.util.Objects;
 import java.util.function.Predicate;
 import org.apache.commons.lang.StringUtils;
@@ -79,11 +78,11 @@ public abstract class AbstractDisplayAction implements Action {
         return displayURLProvider;
     }
 
+    /**
+     * @deprecated use {@link DisplayURLProvider#getUserPreferredProviderProperty()}
+     */
     @VisibleForTesting
     @Deprecated
-    /**
-     * @deprecated use {@link DisplayURLProvider#getUserPReferredProviderProperty}
-     */
     protected PreferredProviderUserProperty getUserPreferredProviderProperty() {
         return DisplayURLProvider.getUserPreferredProviderProperty();
     }

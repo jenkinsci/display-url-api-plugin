@@ -102,18 +102,16 @@ public class DisplayURLContext implements Closeable {
      */
     private void guessPlugin() {
         StackTraceElement[] stack = (new Throwable()).getStackTrace();
-        PluginManager manager = Jenkins.getInstance().getPluginManager();
+        PluginManager manager = Jenkins.get().getPluginManager();
         ClassLoader loader = manager.uberClassLoader;
         for (StackTraceElement frame : stack) {
             String cname = frame.getClassName();
             if (ourPluginClassNames.contains(cname)) {
                 continue;
             }
-            Optional<PluginWrapper> wrapper = CACHE.getIfPresent( cname);
+            Optional<PluginWrapper> wrapper = CACHE.getIfPresent(cname);
             if(wrapper != null){
-                if(wrapper.isPresent()){
-                    plugin = wrapper.get();
-                }
+                wrapper.ifPresent(pluginWrapper -> plugin = pluginWrapper);
             } else
             {
                 try {

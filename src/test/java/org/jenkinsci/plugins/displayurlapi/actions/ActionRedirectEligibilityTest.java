@@ -11,7 +11,6 @@ import org.jenkinsci.plugins.displayurlapi.ClassicDisplayURLProvider;
 import org.jenkinsci.plugins.displayurlapi.DisplayURLProvider;
 import org.jenkinsci.plugins.displayurlapi.user.PreferredProviderUserProperty;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Test;
 import org.jvnet.hudson.test.TestExtension;
 
@@ -19,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Collection;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ActionRedirectEligibilityTest extends AbstractActionRedirectTest {
 
@@ -30,7 +30,7 @@ public class ActionRedirectEligibilityTest extends AbstractActionRedirectTest {
     }
 
     @Test
-    public void testUserChooseImplementation() throws Exception {
+    public void testUserChooseImplementation() {
         // no user then different than Classic
         propToUse = null;
         given()
@@ -70,18 +70,18 @@ public class ActionRedirectEligibilityTest extends AbstractActionRedirectTest {
     }
 
     @Test
-    public void testUserDefaultImplementation() throws Exception {
-        Assert.assertThat(DisplayURLProvider.getDefault(), Matchers.instanceOf(ClassicDisplayURLProvider.class));
+    public void testUserDefaultImplementation() {
+        assertThat(DisplayURLProvider.getDefault(), Matchers.instanceOf(ClassicDisplayURLProvider.class));
 
         System.setProperty("jenkins.displayurl.provider", EligibleDisplayURLProvider.class.getName());
-        Assert.assertThat(DisplayURLProvider.getDefault(), Matchers.instanceOf(EligibleDisplayURLProvider.class));
+        assertThat(DisplayURLProvider.getDefault(), Matchers.instanceOf(EligibleDisplayURLProvider.class));
 
         System.setProperty("jenkins.displayurl.provider", ClassicDisplayURLProvider.class.getName());
-        Assert.assertThat(DisplayURLProvider.getDefault(), Matchers.instanceOf(ClassicDisplayURLProvider.class));
+        assertThat(DisplayURLProvider.getDefault(), Matchers.instanceOf(ClassicDisplayURLProvider.class));
     }
 
     @Test
-    public void testUserDefaultImplementationForRedirection() throws Exception {
+    public void testUserDefaultImplementationForRedirection() {
         //set Classic provider
         System.setProperty("jenkins.displayurl.provider", ClassicDisplayURLProvider.class.getName());
         given()

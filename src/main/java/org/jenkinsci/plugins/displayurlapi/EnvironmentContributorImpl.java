@@ -8,13 +8,11 @@ import hudson.model.Job;
 import hudson.model.Run;
 import hudson.model.TaskListener;
 
-import java.io.IOException;
-
 @Extension
 public class EnvironmentContributorImpl extends EnvironmentContributor {
 
     @Override
-    public void buildEnvironmentFor(@NonNull Run r, @NonNull EnvVars envs, @NonNull TaskListener listener) throws IOException, InterruptedException {
+    public void buildEnvironmentFor(@NonNull Run r, @NonNull EnvVars envs, @NonNull TaskListener listener) {
         try (DisplayURLContext ctx = DisplayURLContext.open(false)) { // environment contributor "comes from" core
             ctx.run(r);
             DisplayURLProvider urlProvider = DisplayURLProvider.get();
@@ -26,7 +24,7 @@ public class EnvironmentContributorImpl extends EnvironmentContributor {
     }
 
     @Override
-    public void buildEnvironmentFor(@NonNull Job j, @NonNull EnvVars envs, @NonNull TaskListener listener) throws IOException, InterruptedException {
+    public void buildEnvironmentFor(@NonNull Job j, @NonNull EnvVars envs, @NonNull TaskListener listener) {
         try (DisplayURLContext ctx = DisplayURLContext.open(false)) {
             ctx.job(j);
             envs.put("JOB_DISPLAY_URL", DisplayURLProvider.get().getJobURL(j));

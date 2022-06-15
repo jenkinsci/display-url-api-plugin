@@ -71,7 +71,7 @@ public class ActionRedirectClassicTest extends AbstractActionRedirectTest {
     }
 
     @Test
-    public void testRedirectForChangesURL() throws Exception {
+    public void testRedirectForChangesURL() {
         given()
                 .urlEncodingEnabled(false)
                 .redirects().follow(false)
@@ -81,7 +81,7 @@ public class ActionRedirectClassicTest extends AbstractActionRedirectTest {
     }
 
     @Test
-    public void testRedirectForTestsURL() throws Exception {
+    public void testRedirectForTestsURL() {
         given()
                 .urlEncodingEnabled(false)
                 .redirects().follow(false)
