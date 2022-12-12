@@ -1,2 +1,2 @@
 _extends: .github
-tag-template: display-url-api-plugin-$NEXT_MINOR_VERSION
+tag-template: display-url-api-$NEXT_MINOR_VERSION
