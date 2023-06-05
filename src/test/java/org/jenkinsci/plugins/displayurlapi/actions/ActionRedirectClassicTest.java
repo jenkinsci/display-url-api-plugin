@@ -1,7 +1,7 @@
 package org.jenkinsci.plugins.displayurlapi.actions;
 
-import com.gargoylesoftware.htmlunit.WebRequest;
-import com.gargoylesoftware.htmlunit.WebResponse;
+import org.htmlunit.WebRequest;
+import org.htmlunit.WebResponse;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
 import org.jenkinsci.plugins.displayurlapi.ClassicDisplayURLProvider;
