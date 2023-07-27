@@ -79,6 +79,14 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
     }
 
     /**
+     * Fully qualified URL for a Run console
+     */
+    @NonNull
+    public String getConsoleURL(Run<?, ?> run) {
+        return getRunURL(run);
+    }
+
+    /**
      * Fully qualified URL for a Run
      */
     @NonNull
@@ -141,6 +149,12 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
                 return DisplayURLDecorator
                     .decorate(ctx, super.getRunURL(run) + DISPLAY_POSTFIX + "?page=" + page);
             }
+        }
+
+        @NonNull
+        @Override
+        public String getConsoleURL(Run<?, ?> run) {
+            return getPageURL(run, "console");
         }
 
         @Override

@@ -50,6 +50,9 @@ public class RunDisplayAction extends AbstractDisplayAction {
         String url;
         if (page != null) {
             switch (page) {
+                case "console":
+                    url = provider.getConsoleURL(run);
+                    break;
                 case "artifacts":
                     url = provider.getArtifactsURL(run);
                     break;

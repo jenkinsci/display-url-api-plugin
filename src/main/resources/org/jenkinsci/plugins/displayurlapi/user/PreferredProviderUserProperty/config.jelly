@@ -1,9 +1,24 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
          xmlns:t="/lib/hudson" xmlns:f="/lib/form">
-  <f:block>
-    <f:entry field="providerId">
-        <f:select/>
-    </f:entry>
-  </f:block>
+    <f:block>
+        <f:entry field="providerId" title="Job URL provider">
+            <f:select/>
+        </f:entry>
+        <f:entry field="providerIdRun" title="Run URL provider">
+            <f:select/>
+        </f:entry>
+        <f:entry field="providerIdConsole" title="Console URL provider">
+            <f:select/>
+        </f:entry>
+        <f:entry field="providerIdArtifacts" title="Artifacts URL provider">
+            <f:select/>
+        </f:entry>
+        <f:entry field="providerIdChanges" title="Changes URL provider">
+            <f:select/>
+        </f:entry>
+        <f:entry field="providerIdTests" title="Tests URL provider">
+            <f:select/>
+        </f:entry>
+    </f:block>
 </j:jelly>

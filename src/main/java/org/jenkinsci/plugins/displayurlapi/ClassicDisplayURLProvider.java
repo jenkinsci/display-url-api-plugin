@@ -24,6 +24,12 @@ public class ClassicDisplayURLProvider extends DisplayURLProvider {
         return "classic";
     }
 
+    @NonNull
+    @Override
+    public String getConsoleURL(Run<?, ?> run) {
+        return getRoot() + Util.encode(run.getUrl()) + "console";
+    }
+
     @Override
     @NonNull
     public String getRunURL(Run<?, ?> run) {
