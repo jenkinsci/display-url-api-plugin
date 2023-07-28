@@ -67,6 +67,16 @@ public class ActionRedirectExtendedTest extends AbstractActionRedirectTest {
     }
 
     @Test
+    public void testRedirectForConsoleURL() {
+        given()
+                .urlEncodingEnabled(false)
+                .redirects().follow(false)
+                .when().get(provider.getConsoleURL(run)).then()
+                .statusCode(HttpServletResponse.SC_MOVED_TEMPORARILY)
+                .header("Location", getRedirectedProvider().getConsoleURL(run));
+    }
+
+    @Test
     public void testRedirectForYetAnotherProviderParameter() {
         given()
             .urlEncodingEnabled(false)
@@ -74,6 +84,13 @@ public class ActionRedirectExtendedTest extends AbstractActionRedirectTest {
             .when().get(provider.getChangesURL(run) + "&provider=YetAnotherDisplayURLProvider").then()
             .statusCode(HttpServletResponse.SC_MOVED_TEMPORARILY)
             .header("Location", getYetAnotherRedirectedProvider().getChangesURL(run));
+
+        given()
+                .urlEncodingEnabled(false)
+                .redirects().follow(false)
+                .when().get(provider.getConsoleURL(run) + "&provider=YetAnotherDisplayURLProvider").then()
+                .statusCode(HttpServletResponse.SC_MOVED_TEMPORARILY)
+                .header("Location", getYetAnotherRedirectedProvider().getConsoleURL(run));
     }
 
     @Test
@@ -85,6 +102,7 @@ public class ActionRedirectExtendedTest extends AbstractActionRedirectTest {
         assertEquals(root + "job/my%20folder/job/my%20job/1/artifactanother", getRedirectedProvider().getArtifactsURL(run));
         assertEquals(root + "job/my%20folder/job/my%20job/changesanother", getRedirectedProvider().getChangesURL(run));
         assertEquals(root + "job/my%20folder/job/my%20job/1/testReportanother", getRedirectedProvider().getTestsURL(run));
+        assertEquals(root + "job/my%20folder/job/my%20job/1/consoleanother", getRedirectedProvider().getConsoleURL(run));
     }
 
 
@@ -123,6 +141,12 @@ public class ActionRedirectExtendedTest extends AbstractActionRedirectTest {
         @Override
         public String getTestsURL(Run<?, ?> run) {
             return DisplayURLProvider.getDefault().getTestsURL(run) + EXTRA_CONTENT_IN_URL;
+        }
+
+        @NonNull
+        @Override
+        public String getConsoleURL(Run<?, ?> run) {
+            return DisplayURLProvider.getDefault().getConsoleURL(run) + EXTRA_CONTENT_IN_URL;
         }
 
         @NonNull

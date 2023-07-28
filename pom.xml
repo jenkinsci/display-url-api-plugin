@@ -17,6 +17,8 @@
     <revision>2.3.8</revision>
     <changelist>-SNAPSHOT</changelist>
     <jenkins.version>2.361.1</jenkins.version>
+    <!-- TODO: https://github.com/jenkinsci/jenkins/pull/8321 -->
+    <jenkins.version>2.418-rc34038.d1f3a_a_29f872</jenkins.version>
     <gitHubRepo>jenkinsci/${project.artifactId}-plugin</gitHubRepo>
   </properties>
 

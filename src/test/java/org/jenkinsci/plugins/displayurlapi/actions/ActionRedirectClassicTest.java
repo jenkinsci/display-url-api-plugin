@@ -90,6 +90,16 @@ public class ActionRedirectClassicTest extends AbstractActionRedirectTest {
                 .header("Location", getRedirectedProvider().getTestsURL(run));
     }
 
+    @Test
+    public void testRedirectForConsoleURL() {
+        given()
+                .urlEncodingEnabled(false)
+                .redirects().follow(false)
+                .when().get(provider.getConsoleURL(run)).then()
+                .statusCode(HttpServletResponse.SC_MOVED_TEMPORARILY)
+                .header("Location", getRedirectedProvider().getConsoleURL(run));
+    }
+
     @Override
     protected DisplayURLProvider getRedirectedProvider() {
         return Iterables.find(DisplayURLProvider.all(), Predicates.instanceOf(ClassicDisplayURLProvider.class));
