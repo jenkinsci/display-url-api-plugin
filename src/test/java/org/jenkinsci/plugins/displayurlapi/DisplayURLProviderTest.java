@@ -9,7 +9,9 @@ import hudson.model.Job;
 import hudson.model.Run;
 import hudson.model.User;
 import hudson.security.ACL;
+import hudson.security.ACLContext;
 import jenkins.model.Jenkins;
+import org.jenkinsci.plugins.displayurlapi.actions.RunDisplayAction;
 import org.jenkinsci.plugins.displayurlapi.user.PreferredProviderUserProperty;
 import org.junit.Rule;
 import org.junit.Test;
@@ -268,6 +270,26 @@ public class DisplayURLProviderTest {
         assertEquals(DisplayURLProvider.get().getChangesURL(run), environment.get("RUN_CHANGES_DISPLAY_URL"));
         assertEquals(DisplayURLProvider.get().getTestsURL(run), environment.get("RUN_TESTS_DISPLAY_URL"));
         assertEquals(DisplayURLProvider.get().getJobURL(project), environment.get("JOB_DISPLAY_URL"));
+    }
+
+    @Test
+    public void providerConfigurationPrecedence() throws Exception {
+        rule.jenkins.setSecurityRealm(rule.createDummySecurityRealm());
+        // user1 does not have a preference, but user2 does.
+        User user1 = User.getById("user1", true);
+        User user2 = User.getById("user2", true);
+        user2.addProperty(new PreferredProviderUserProperty(ClassicDisplayURLProvider.class.getName()));
+        // admin configures TestUserDisplayURLProvider as the default provider.
+        DefaultProviderGlobalConfiguration.get().setProviderId(TestUserDisplayURLProvider.class.getName());
+        FreeStyleProject p = rule.createFreeStyleProject();
+        Run<?, ?> b = rule.buildAndAssertSuccess(p);
+        RunDisplayAction action = b.getAction(RunDisplayAction.class);
+        try (ACLContext unused = ACL.as2(user1.impersonate2())) {
+            assertEquals(rule.getURL() + b.getUrl() + TestUserDisplayURLProvider.EXTRA_CONTENT_IN_URL, action.getDisplayUrl());
+        }
+        try (ACLContext unused = ACL.as2(user2.impersonate2())) {
+            assertEquals(rule.getURL() + b.getUrl(), action.getDisplayUrl());
+        }
     }
 
     @TestExtension("decoration")

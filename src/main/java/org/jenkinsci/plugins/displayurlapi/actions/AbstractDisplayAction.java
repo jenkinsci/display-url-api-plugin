@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.function.Predicate;
 import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.plugins.displayurlapi.ClassicDisplayURLProvider;
+import org.jenkinsci.plugins.displayurlapi.DefaultProviderGlobalConfiguration;
 import org.jenkinsci.plugins.displayurlapi.DisplayURLProvider;
 import org.jenkinsci.plugins.displayurlapi.user.PreferredProviderUserProperty;
 import org.kohsuke.stapler.StaplerRequest;
@@ -61,10 +62,15 @@ public abstract class AbstractDisplayAction implements Action {
     }
 
     DisplayURLProvider lookupProvider() {
+        // Check user preferences, then the global default (if any), then fall back to the extension with the highest ordinal value.
         PreferredProviderUserProperty prefProperty = getUserPreferredProviderProperty();
 
         if (prefProperty != null && prefProperty.getConfiguredProvider() != null) {
             return prefProperty.getConfiguredProvider();
+        }
+        DisplayURLProvider globalProvider = DefaultProviderGlobalConfiguration.get().getConfiguredProvider();
+        if (globalProvider != null) {
+            return globalProvider;
         }
         DisplayURLProvider displayURLProvider = DisplayURLProvider.getPreferredProvider();
         if (displayURLProvider == null) {

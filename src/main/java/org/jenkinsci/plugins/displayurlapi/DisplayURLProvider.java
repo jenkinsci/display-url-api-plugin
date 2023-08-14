@@ -28,6 +28,10 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
      * @return DisplayURLProvider
      */
     public static DisplayURLProvider get() {
+        // TODO: Would it not make more sense to return DisplayURLProviderImpl.INSTANCE unconditionally, always
+        // serving /display/redirect URLs that only get resolved when an actual user clicks on them? There is no
+        // guarantee that the current user (if any) is going to be the user who clicks the generated link so IDK why we
+        // take the current user's preferences into account here.
         DisplayURLProvider preferredProvider = getPreferredProvider();
         return preferredProvider != null ? preferredProvider : DisplayURLProviderImpl.INSTANCE;
     }
@@ -189,6 +193,8 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
         if (prefProperty != null && prefProperty.getConfiguredProvider() != null) {
             return prefProperty.getConfiguredProvider();
         }
+        // Note that this logic means that `/display/redirect` links will never be produced when using the environment
+        // variable or system property, meaning that it effetively disables user preferences.
         String clazz = findClass();
         if (isNotEmpty(clazz)) {
             return ExtensionList.lookup(DisplayURLProvider.class).getDynamic(clazz);
