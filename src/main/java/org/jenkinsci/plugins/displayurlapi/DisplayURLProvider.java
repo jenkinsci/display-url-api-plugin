@@ -1,5 +1,6 @@
 package org.jenkinsci.plugins.displayurlapi;
 
+import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import hudson.ExtensionList;
@@ -19,7 +20,16 @@ import static org.apache.commons.lang.StringUtils.isNotEmpty;
  * Generates URLs for well known UI locations for use in notifications (e.g. mailer, HipChat, Slack,
  * IRC, etc) Extensible to allow plugins to override common URLs (e.g. Blue Ocean or another future
  * secondary UI)
+ *
+ * <p>Implementations should generally extend {@link ClassicDisplayURLProvider} and delegate to it for unsupported
+ * builds instead of extending this class directly.
  */
+/* TODO: This API is awkward to implement. All providers must return a non-null value for all URLs, meaning that in
+   practice they all need to delegate to ClassicDisplayURLProvider. Ideally, the API would allow providers to return
+   null to indicate that they do not support a particular build/job, and we would loop over all providers in a
+   user-defined order looking for the first one that returns a non-null URL, which would allow providers which handle
+   distinct job types to coexist.
+*/
 public abstract class DisplayURLProvider implements ExtensionPoint {
 
     /**
@@ -28,12 +38,7 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
      * @return DisplayURLProvider
      */
     public static DisplayURLProvider get() {
-        // TODO: Would it not make more sense to return DisplayURLProviderImpl.INSTANCE unconditionally, always
-        // serving /display/redirect URLs that only get resolved when an actual user clicks on them? There is no
-        // guarantee that the current user (if any) is going to be the user who clicks the generated link so IDK why we
-        // take the current user's preferences into account here.
-        DisplayURLProvider preferredProvider = getPreferredProvider();
-        return preferredProvider != null ? preferredProvider : DisplayURLProviderImpl.INSTANCE;
+        return DisplayURLProviderImpl.INSTANCE;
     }
 
     /**
@@ -45,13 +50,30 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
         return ExtensionList.lookup(DisplayURLProvider.class);
     }
 
+    /**
+     * Returns the singleton instance of the {@link ClassicDisplayURLProvider} extension.
+     *
+     * <p>If you want to retrieve the configured default provider, use {@link getConfiguredDefault}.
+     */
     public static DisplayURLProvider getDefault() {
-        DisplayURLProvider defaultProvider = getPreferredProvider();
-        if (defaultProvider == null) {
-            defaultProvider = ExtensionList.lookup(DisplayURLProvider.class)
+        return ExtensionList.lookup(DisplayURLProvider.class)
                 .get(ClassicDisplayURLProvider.class);
+    }
+
+    /**
+     * Returns the {@link DisplayURLProvider} that has been configured as a global default, either via {@link DefaultProviderGlobalConfiguration},
+     * or by environment variable or system property, or {@code null} if there no configured default.
+     */
+    public static @CheckForNull DisplayURLProvider getConfiguredDefault() {
+        DisplayURLProvider guiProvider = DefaultProviderGlobalConfiguration.get().getConfiguredProvider();
+        if (guiProvider != null) {
+            return guiProvider;
         }
-        return defaultProvider;
+        String clazz = findClass();
+        if (isNotEmpty(clazz)) {
+            return ExtensionList.lookup(DisplayURLProvider.class).getDynamic(clazz);
+        }
+        return null;
     }
 
     /**
@@ -186,6 +208,12 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
         return clazz;
     }
 
+    /**
+     * @deprecated If you need the default implementation for producing display URLs, use {@link #get}.
+     * If you need a fallback provider for your implementation of {@link DisplayURLProvider} that will work for all jobs and runs, use {@link #getDefault}.
+     * Actual redirect resolution incorporating user preferences should be left to {@link AbstractDisplayAction#lookupProvider}
+     */
+    @Deprecated
     @Nullable
     public static DisplayURLProvider getPreferredProvider() {
         PreferredProviderUserProperty prefProperty = getUserPreferredProviderProperty();
@@ -193,8 +221,6 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
         if (prefProperty != null && prefProperty.getConfiguredProvider() != null) {
             return prefProperty.getConfiguredProvider();
         }
-        // Note that this logic means that `/display/redirect` links will never be produced when using the environment
-        // variable or system property, meaning that it effetively disables user preferences.
         String clazz = findClass();
         if (isNotEmpty(clazz)) {
             return ExtensionList.lookup(DisplayURLProvider.class).getDynamic(clazz);
@@ -209,5 +235,5 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
     }
 
     private static final String JENKINS_DISPLAYURL_PROVIDER_ENV = "JENKINS_DISPLAYURL_PROVIDER";
-    private static final String JENKINS_DISPLAYURL_PROVIDER_PROP = "jenkins.displayurl.provider";
+    static final String JENKINS_DISPLAYURL_PROVIDER_PROP = "jenkins.displayurl.provider";
 }

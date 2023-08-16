@@ -7,7 +7,6 @@ import java.util.Objects;
 import java.util.function.Predicate;
 import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.plugins.displayurlapi.ClassicDisplayURLProvider;
-import org.jenkinsci.plugins.displayurlapi.DefaultProviderGlobalConfiguration;
 import org.jenkinsci.plugins.displayurlapi.DisplayURLProvider;
 import org.jenkinsci.plugins.displayurlapi.user.PreferredProviderUserProperty;
 import org.kohsuke.stapler.StaplerRequest;
@@ -62,25 +61,26 @@ public abstract class AbstractDisplayAction implements Action {
     }
 
     DisplayURLProvider lookupProvider() {
-        // Check user preferences, then the global default (if any), then fall back to the extension with the highest ordinal value.
+        // We pick the first non-null option in this order:
+        // 1: PreferredProviderUserProperty (user preference)
+        // 2: DefaultProviderGlobalConfiguration (GUI-configured global default)
+        // 3: Env var/system properties defined in DisplayURLProvider
+        // 4: Whatever DisplayUrlProvider extension has the highest ordinal value, with ClassicDisplayURLProvider always being available.
         PreferredProviderUserProperty prefProperty = getUserPreferredProviderProperty();
 
         if (prefProperty != null && prefProperty.getConfiguredProvider() != null) {
             return prefProperty.getConfiguredProvider();
         }
-        DisplayURLProvider globalProvider = DefaultProviderGlobalConfiguration.get().getConfiguredProvider();
+        DisplayURLProvider globalProvider = DisplayURLProvider.getConfiguredDefault();
         if (globalProvider != null) {
             return globalProvider;
         }
-        DisplayURLProvider displayURLProvider = DisplayURLProvider.getPreferredProvider();
-        if (displayURLProvider == null) {
-            ExtensionList<DisplayURLProvider> all = DisplayURLProvider.all();
-            displayURLProvider = all.stream()
+        ExtensionList<DisplayURLProvider> all = DisplayURLProvider.all();
+        DisplayURLProvider displayURLProvider = all.stream()
                 .filter(
                     ((Predicate<DisplayURLProvider>) ClassicDisplayURLProvider.class::isInstance)
                         .negate())
                 .findFirst().orElse(DisplayURLProvider.getDefault());
-        }
         return displayURLProvider;
     }
 

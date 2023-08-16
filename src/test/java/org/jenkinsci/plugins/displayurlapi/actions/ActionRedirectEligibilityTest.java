@@ -74,10 +74,10 @@ public class ActionRedirectEligibilityTest extends AbstractActionRedirectTest {
         assertThat(DisplayURLProvider.getDefault(), Matchers.instanceOf(ClassicDisplayURLProvider.class));
 
         System.setProperty("jenkins.displayurl.provider", EligibleDisplayURLProvider.class.getName());
-        assertThat(DisplayURLProvider.getDefault(), Matchers.instanceOf(EligibleDisplayURLProvider.class));
+        assertThat(DisplayURLProvider.getConfiguredDefault(), Matchers.instanceOf(EligibleDisplayURLProvider.class));
 
         System.setProperty("jenkins.displayurl.provider", ClassicDisplayURLProvider.class.getName());
-        assertThat(DisplayURLProvider.getDefault(), Matchers.instanceOf(ClassicDisplayURLProvider.class));
+        assertThat(DisplayURLProvider.getConfiguredDefault(), Matchers.instanceOf(ClassicDisplayURLProvider.class));
     }
 
     @Test
