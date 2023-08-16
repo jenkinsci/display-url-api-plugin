@@ -64,8 +64,9 @@ public abstract class AbstractDisplayAction implements Action {
         // We pick the first non-null option in this order:
         // 1: PreferredProviderUserProperty (user preference)
         // 2: DefaultProviderGlobalConfiguration (GUI-configured global default)
-        // 3: Env var/system properties defined in DisplayURLProvider
-        // 4: Whatever DisplayUrlProvider extension has the highest ordinal value, with ClassicDisplayURLProvider always being available.
+        // 3: Env var/system properties defined in DisplayURLProvider (global default)
+        // 4: The DisplayUrlProvider extension with the highest ordinal value that is not an instance of ClassicDisplayURLProvider
+        // 5. ClassicDisplayURLProvider
         PreferredProviderUserProperty prefProperty = getUserPreferredProviderProperty();
 
         if (prefProperty != null && prefProperty.getConfiguredProvider() != null) {
