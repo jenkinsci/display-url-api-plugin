@@ -23,11 +23,10 @@ import static org.apache.commons.lang.StringUtils.isNotEmpty;
  * <p>Implementations should generally extend {@link ClassicDisplayURLProvider} and delegate to it for unsupported
  * builds instead of extending this class directly.
  */
-/* TODO: This API is awkward to implement. All providers must return a non-null value for all URLs, meaning that in
-   practice they all need to delegate to ClassicDisplayURLProvider. Ideally, the API would allow providers to return
-   null to indicate that they do not support a particular build/job, and we would loop over all providers in a
-   user-defined order looking for the first one that returns a non-null URL, which would allow providers which handle
-   distinct job types to coexist.
+/* TODO: This API is awkward. All providers must return a non-null value for all URLs, meaning that in practice they
+   all need to delegate to ClassicDisplayURLProvider. Ideally, the API would allow providers to return null to indicate
+   that they do not support a particular build/job, and we would loop over all providers in a user-defined order looking
+   for the first one that returns a non-null URL, which would allow providers which handle distinct job types to coexist.
 */
 public abstract class DisplayURLProvider implements ExtensionPoint {
 
@@ -52,8 +51,6 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
 
     /**
      * Returns the singleton instance of the {@link ClassicDisplayURLProvider} extension.
-     *
-     * <p>If you want to retrieve the configured default provider, use {@link getConfiguredDefault}.
      */
     public static DisplayURLProvider getDefault() {
         return ExtensionList.lookup(DisplayURLProvider.class)
