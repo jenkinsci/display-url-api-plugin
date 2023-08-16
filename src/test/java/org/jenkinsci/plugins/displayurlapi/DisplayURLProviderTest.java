@@ -229,12 +229,11 @@ public class DisplayURLProviderTest {
         DefaultProviderGlobalConfiguration.get().setProviderId(TestUserDisplayURLProvider.class.getName());
         FreeStyleProject p = rule.createFreeStyleProject();
         Run<?, ?> b = rule.buildAndAssertSuccess(p);
-        RunDisplayAction action = b.getAction(RunDisplayAction.class);
-        try (ACLContext unused = ACL.as2(user1.impersonate2())) {
-            assertEquals(rule.getURL() + b.getUrl() + TestUserDisplayURLProvider.EXTRA_CONTENT_IN_URL, action.getDisplayUrl());
+        try (ACLContext unused = ACL.as(user1)) {
+            assertEquals(rule.getURL() + b.getUrl() + TestUserDisplayURLProvider.EXTRA_CONTENT_IN_URL, DisplayURLProvider.getPreferredProvider().getRunURL(b));
         }
-        try (ACLContext unused = ACL.as2(user2.impersonate2())) {
-            assertEquals(rule.getURL() + b.getUrl(), action.getDisplayUrl());
+        try (ACLContext unused = ACL.as(user2)) {
+            assertEquals(rule.getURL() + b.getUrl(), DisplayURLProvider.getPreferredProvider().getRunURL(b));
         }
     }
 

@@ -1,14 +1,10 @@
 package org.jenkinsci.plugins.displayurlapi.actions;
 
-import com.google.common.annotations.VisibleForTesting;
 import hudson.ExtensionList;
 import hudson.model.Action;
 import java.util.Objects;
-import java.util.function.Predicate;
 import org.apache.commons.lang.StringUtils;
-import org.jenkinsci.plugins.displayurlapi.ClassicDisplayURLProvider;
 import org.jenkinsci.plugins.displayurlapi.DisplayURLProvider;
-import org.jenkinsci.plugins.displayurlapi.user.PreferredProviderUserProperty;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
@@ -61,37 +57,7 @@ public abstract class AbstractDisplayAction implements Action {
     }
 
     DisplayURLProvider lookupProvider() {
-        // We pick the first non-null option in this order:
-        // 1: PreferredProviderUserProperty (user preference)
-        // 2: DefaultProviderGlobalConfiguration (GUI-configured global default)
-        // 3: Env var/system properties defined in DisplayURLProvider (global default)
-        // 4: The DisplayUrlProvider extension with the highest ordinal value that is not an instance of ClassicDisplayURLProvider
-        // 5. ClassicDisplayURLProvider
-        PreferredProviderUserProperty prefProperty = getUserPreferredProviderProperty();
-
-        if (prefProperty != null && prefProperty.getConfiguredProvider() != null) {
-            return prefProperty.getConfiguredProvider();
-        }
-        DisplayURLProvider globalProvider = DisplayURLProvider.getConfiguredDefault();
-        if (globalProvider != null) {
-            return globalProvider;
-        }
-        ExtensionList<DisplayURLProvider> all = DisplayURLProvider.all();
-        DisplayURLProvider displayURLProvider = all.stream()
-                .filter(
-                    ((Predicate<DisplayURLProvider>) ClassicDisplayURLProvider.class::isInstance)
-                        .negate())
-                .findFirst().orElse(DisplayURLProvider.getDefault());
-        return displayURLProvider;
-    }
-
-    /**
-     * @deprecated use {@link DisplayURLProvider#getUserPreferredProviderProperty()}
-     */
-    @VisibleForTesting
-    @Deprecated
-    protected PreferredProviderUserProperty getUserPreferredProviderProperty() {
-        return DisplayURLProvider.getUserPreferredProviderProperty();
+        return DisplayURLProvider.getPreferredProvider();
     }
 
 }
