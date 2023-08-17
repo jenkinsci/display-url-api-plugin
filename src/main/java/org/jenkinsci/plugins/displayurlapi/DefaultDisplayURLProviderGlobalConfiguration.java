@@ -36,7 +36,7 @@ import org.jenkinsci.plugins.displayurlapi.user.PreferredProviderUserProperty;
 import org.kohsuke.stapler.DataBoundSetter;
 
 @Extension
-@Symbol("defaultNotificationUrl")
+@Symbol("defaultDisplayUrlProvider")
 public class DefaultDisplayURLProviderGlobalConfiguration extends GlobalConfiguration {
 
     public DefaultDisplayURLProviderGlobalConfiguration() {
