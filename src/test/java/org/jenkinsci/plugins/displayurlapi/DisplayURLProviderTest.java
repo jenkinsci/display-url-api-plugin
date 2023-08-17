@@ -226,7 +226,7 @@ public class DisplayURLProviderTest {
         User user2 = User.getById("user2", true);
         user2.addProperty(new PreferredProviderUserProperty(ClassicDisplayURLProvider.class.getName()));
         // admin configures TestUserDisplayURLProvider as the default provider.
-        DefaultProviderGlobalConfiguration.get().setProviderId(TestUserDisplayURLProvider.class.getName());
+        DefaultDisplayURLProviderGlobalConfiguration.get().setProviderId(TestUserDisplayURLProvider.class.getName());
         FreeStyleProject p = rule.createFreeStyleProject();
         Run<?, ?> b = rule.buildAndAssertSuccess(p);
         try (ACLContext unused = ACL.as(user1)) {

@@ -31,13 +31,15 @@ import hudson.Util;
 import hudson.util.ListBoxModel;
 import java.util.Objects;
 import jenkins.model.GlobalConfiguration;
+import org.jenkinsci.Symbol;
 import org.jenkinsci.plugins.displayurlapi.user.PreferredProviderUserProperty;
 import org.kohsuke.stapler.DataBoundSetter;
 
 @Extension
-public class DefaultProviderGlobalConfiguration extends GlobalConfiguration {
+@Symbol("defaultNotificationUrl")
+public class DefaultDisplayURLProviderGlobalConfiguration extends GlobalConfiguration {
 
-    public DefaultProviderGlobalConfiguration() {
+    public DefaultDisplayURLProviderGlobalConfiguration() {
         load();
     }
 
@@ -67,8 +69,8 @@ public class DefaultProviderGlobalConfiguration extends GlobalConfiguration {
             .orElse(null);
     }
 
-    public static DefaultProviderGlobalConfiguration get() {
-        return ExtensionList.lookupSingleton(DefaultProviderGlobalConfiguration.class);
+    public static DefaultDisplayURLProviderGlobalConfiguration get() {
+        return ExtensionList.lookupSingleton(DefaultDisplayURLProviderGlobalConfiguration.class);
     }
 
     public ListBoxModel doFillProviderIdItems() {

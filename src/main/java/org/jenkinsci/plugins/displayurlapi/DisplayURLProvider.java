@@ -195,7 +195,7 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
      * <p>Precedence is as follows, stopping at the first non-null value:
      * <ol>
      * <li>{@link PreferredProviderUserProperty}
-     * <li>{@link DefaultProviderGlobalConfiguration}
+     * <li>{@link DefaultDisplayURLProviderGlobalConfiguration}
      * <li>{@link #JENKINS_DISPLAYURL_PROVIDER_ENV}
      * <li>{@link #JENKINS_DISPLAYURL_PROVIDER_PROP}
      * <li>The provider extension with the highest ordinal value that is not an instance of {@link ClassicDisplayURLProvider}
@@ -209,7 +209,7 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
         if (userProperty != null && userProperty.getConfiguredProvider() != null) {
             return userProperty.getConfiguredProvider();
         }
-        DisplayURLProvider globalGuiProvider = DefaultProviderGlobalConfiguration.get().getConfiguredProvider();
+        DisplayURLProvider globalGuiProvider = DefaultDisplayURLProviderGlobalConfiguration.get().getConfiguredProvider();
         if (globalGuiProvider != null) {
             return globalGuiProvider;
         }
