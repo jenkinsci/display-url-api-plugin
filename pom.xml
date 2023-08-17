@@ -10,11 +10,11 @@
   </parent>
 
   <artifactId>display-url-api</artifactId>
-  <version>${revision}${changelist}</version>
+  <version>${revision}.${changelist}</version>
   <packaging>hpi</packaging>
 
   <properties>
-    <revision>2.3.9</revision>
+    <revision>2</revision>
     <changelist>-SNAPSHOT</changelist>
     <jenkins.version>2.361.1</jenkins.version>
     <gitHubRepo>jenkinsci/${project.artifactId}-plugin</gitHubRepo>
