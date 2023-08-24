@@ -53,7 +53,7 @@ public class PreferredProviderUserProperty extends UserProperty {
             .orElse(null);
     }
 
-    public List<ProviderOption> getAll() {
+    public static List<ProviderOption> getAll() {
         List<ProviderOption> options = DisplayURLProvider.all().stream()
             .map(input -> new ProviderOption(input.getClass().getName(), input.getDisplayName()))
             .collect(Collectors.toList());

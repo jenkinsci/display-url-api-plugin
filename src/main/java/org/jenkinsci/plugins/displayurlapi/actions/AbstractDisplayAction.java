@@ -1,14 +1,10 @@
 package org.jenkinsci.plugins.displayurlapi.actions;
 
-import com.google.common.annotations.VisibleForTesting;
 import hudson.ExtensionList;
 import hudson.model.Action;
 import java.util.Objects;
-import java.util.function.Predicate;
 import org.apache.commons.lang.StringUtils;
-import org.jenkinsci.plugins.displayurlapi.ClassicDisplayURLProvider;
 import org.jenkinsci.plugins.displayurlapi.DisplayURLProvider;
-import org.jenkinsci.plugins.displayurlapi.user.PreferredProviderUserProperty;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
@@ -61,30 +57,7 @@ public abstract class AbstractDisplayAction implements Action {
     }
 
     DisplayURLProvider lookupProvider() {
-        PreferredProviderUserProperty prefProperty = getUserPreferredProviderProperty();
-
-        if (prefProperty != null && prefProperty.getConfiguredProvider() != null) {
-            return prefProperty.getConfiguredProvider();
-        }
-        DisplayURLProvider displayURLProvider = DisplayURLProvider.getPreferredProvider();
-        if (displayURLProvider == null) {
-            ExtensionList<DisplayURLProvider> all = DisplayURLProvider.all();
-            displayURLProvider = all.stream()
-                .filter(
-                    ((Predicate<DisplayURLProvider>) ClassicDisplayURLProvider.class::isInstance)
-                        .negate())
-                .findFirst().orElse(DisplayURLProvider.getDefault());
-        }
-        return displayURLProvider;
-    }
-
-    /**
-     * @deprecated use {@link DisplayURLProvider#getUserPreferredProviderProperty()}
-     */
-    @VisibleForTesting
-    @Deprecated
-    protected PreferredProviderUserProperty getUserPreferredProviderProperty() {
-        return DisplayURLProvider.getUserPreferredProviderProperty();
+        return DisplayURLProvider.getPreferredProvider();
     }
 
 }

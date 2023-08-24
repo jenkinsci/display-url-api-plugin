@@ -22,7 +22,7 @@ public class PreferredProviderUserPropertyDescriptor extends UserPropertyDescrip
     public ListBoxModel doFillProviderIdItems() {
         ListBoxModel items = new ListBoxModel();
         PreferredProviderUserProperty property = PreferredProviderUserProperty.forCurrentUser();
-        for (ProviderOption providerOption : property.getAll()) {
+        for (ProviderOption providerOption : PreferredProviderUserProperty.getAll()) {
             ListBoxModel.Option option = new ListBoxModel.Option(
                     providerOption.getName(),
                     providerOption.getId(),
