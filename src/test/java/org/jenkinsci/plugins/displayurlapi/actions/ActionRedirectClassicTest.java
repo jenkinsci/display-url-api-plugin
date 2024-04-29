@@ -5,7 +5,9 @@ import org.htmlunit.WebResponse;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
 import org.jenkinsci.plugins.displayurlapi.ClassicDisplayURLProvider;
+import org.jenkinsci.plugins.displayurlapi.DefaultDisplayURLProviderGlobalConfiguration;
 import org.jenkinsci.plugins.displayurlapi.DisplayURLProvider;
+import org.junit.Before;
 import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
 
@@ -18,6 +20,13 @@ import static io.restassured.RestAssured.given;
 import static org.junit.Assert.assertEquals;
 
 public class ActionRedirectClassicTest extends AbstractActionRedirectTest {
+
+    @Before
+    public void setup() {
+        DefaultDisplayURLProviderGlobalConfiguration.get().setProviderId(
+                ClassicDisplayURLProvider.class.getName()
+        );
+    }
 
     @Test
     public void testRedirectForJobURL() throws Exception {

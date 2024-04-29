@@ -5,7 +5,9 @@ import com.google.common.collect.Iterables;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.model.Job;
 import hudson.model.Run;
+import org.jenkinsci.plugins.displayurlapi.DefaultDisplayURLProviderGlobalConfiguration;
 import org.jenkinsci.plugins.displayurlapi.DisplayURLProvider;
+import org.junit.Before;
 import org.junit.Test;
 import org.jvnet.hudson.test.TestExtension;
 
@@ -15,6 +17,13 @@ import static io.restassured.RestAssured.given;
 import static org.junit.Assert.assertEquals;
 
 public class ActionRedirectExtendedTest extends AbstractActionRedirectTest {
+
+    @Before
+    public void setup() {
+        DefaultDisplayURLProviderGlobalConfiguration.get().setProviderId(
+                AnotherDisplayURLProvider.class.getName()
+        );
+    }
 
     @Test
     public void testRedirectForJobURL() {
