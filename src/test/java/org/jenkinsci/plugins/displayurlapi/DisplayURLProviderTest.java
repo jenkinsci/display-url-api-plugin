@@ -34,6 +34,10 @@ public class DisplayURLProviderTest {
 
     @Test
     public void urls() throws Exception {
+        DefaultDisplayURLProviderGlobalConfiguration.get().setProviderId(
+                ClassicDisplayURLProvider.class.getName()
+        );
+
         MockFolder folder = rule.createFolder("my folder");
         FreeStyleProject p = folder.createProject(FreeStyleProject.class, "my job");
         Run<?, ?> b = rule.buildAndAssertSuccess(p);
