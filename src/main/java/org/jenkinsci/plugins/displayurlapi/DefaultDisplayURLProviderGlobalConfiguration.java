@@ -25,12 +25,15 @@
 package org.jenkinsci.plugins.displayurlapi;
 
 import edu.umd.cs.findbugs.annotations.CheckForNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.ExtensionList;
 import hudson.Util;
+import hudson.security.Permission;
 import hudson.util.ListBoxModel;
 import java.util.Objects;
 import jenkins.model.GlobalConfiguration;
+import jenkins.model.Jenkins;
 import org.jenkinsci.Symbol;
 import org.jenkinsci.plugins.displayurlapi.user.PreferredProviderUserProperty;
 import org.kohsuke.stapler.DataBoundSetter;
@@ -49,6 +52,11 @@ public class DefaultDisplayURLProviderGlobalConfiguration extends GlobalConfigur
         return providerId;
     }
 
+    @NonNull
+    @Override
+    public Permission getRequiredGlobalConfigPagePermission() {
+        return Jenkins.MANAGE;
+    }
     @DataBoundSetter
     public void setProviderId(@CheckForNull String providerId) {
         providerId = Util.fixEmptyAndTrim(providerId);
