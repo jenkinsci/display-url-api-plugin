@@ -8,7 +8,7 @@ import hudson.model.Run;
 import jenkins.model.TransientActionFactory;
 import org.jenkinsci.plugins.displayurlapi.DisplayURLProvider;
 import org.kohsuke.stapler.Stapler;
-import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.StaplerRequest2;
 
 import java.util.Collection;
 import org.kohsuke.stapler.export.Exported;
@@ -45,7 +45,7 @@ public class RunDisplayAction extends AbstractDisplayAction {
 
     @Override
     protected String getRedirectURL(DisplayURLProvider provider) {
-        StaplerRequest req = Stapler.getCurrentRequest();
+        StaplerRequest2 req = Stapler.getCurrentRequest2();
         String page = req.getParameter("page");
         String url;
         if (page != null) {

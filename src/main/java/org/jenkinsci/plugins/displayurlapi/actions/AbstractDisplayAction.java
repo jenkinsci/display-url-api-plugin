@@ -5,10 +5,10 @@ import hudson.model.Action;
 import java.util.Objects;
 import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.plugins.displayurlapi.DisplayURLProvider;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
+import org.kohsuke.stapler.StaplerRequest2;
+import org.kohsuke.stapler.StaplerResponse2;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public abstract class AbstractDisplayAction implements Action {
@@ -30,7 +30,7 @@ public abstract class AbstractDisplayAction implements Action {
         return URL_NAME;
     }
 
-    public final Object doRedirect(StaplerRequest req, StaplerResponse rsp) throws IOException {
+    public final Object doRedirect(StaplerRequest2 req, StaplerResponse2 rsp) throws IOException {
         DisplayURLProvider provider = lookupProvider(req);
         rsp.sendRedirect(HttpServletResponse.SC_MOVED_TEMPORARILY, getRedirectURL(provider));
         return null;
@@ -38,7 +38,7 @@ public abstract class AbstractDisplayAction implements Action {
 
     protected abstract String getRedirectURL(DisplayURLProvider provider);
 
-    DisplayURLProvider lookupProvider(StaplerRequest req) {
+    DisplayURLProvider lookupProvider(StaplerRequest2 req) {
         final String providerName = req.getParameter("provider");
         if (StringUtils.isNotEmpty(providerName)) {
             ExtensionList<DisplayURLProvider> providers = DisplayURLProvider.all();

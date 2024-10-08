@@ -11,7 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.jvnet.hudson.test.TestExtension;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.Assert.assertEquals;
