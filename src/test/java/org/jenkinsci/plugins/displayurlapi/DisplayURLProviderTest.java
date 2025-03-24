@@ -13,27 +13,39 @@ import hudson.security.ACLContext;
 import jenkins.model.Jenkins;
 import org.jenkinsci.plugins.displayurlapi.actions.RunDisplayAction;
 import org.jenkinsci.plugins.displayurlapi.user.PreferredProviderUserProperty;
-import org.junit.Rule;
-import org.junit.Test;
-import org.jvnet.hudson.test.FlagRule;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.jvnet.hudson.test.JenkinsRule;
 import org.jvnet.hudson.test.MockFolder;
 import org.jvnet.hudson.test.TestExtension;
+import org.jvnet.hudson.test.junit.jupiter.WithJenkins;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class DisplayURLProviderTest {
+@WithJenkins
+class DisplayURLProviderTest {
+    private JenkinsRule rule;
+    private String flag;
 
-    @Rule
-    public JenkinsRuleWithLocalPort rule = new JenkinsRuleWithLocalPort();
+    @BeforeEach
+    void setUp(JenkinsRule r) {
+        rule = r;
+        flag = System.clearProperty(DisplayURLProvider.JENKINS_DISPLAYURL_PROVIDER_PROP);
+    }
 
-    @Rule
-    public FlagRule<String> flag = FlagRule.systemProperty(DisplayURLProvider.JENKINS_DISPLAYURL_PROVIDER_PROP);
+    @AfterEach
+    void tearDown() {
+        if (flag != null) {
+            System.setProperty(DisplayURLProvider.JENKINS_DISPLAYURL_PROVIDER_PROP, flag);
+        }
+    }
 
     @Test
-    public void urls() throws Exception {
+    void urls() throws Exception {
         DefaultDisplayURLProviderGlobalConfiguration.get().setProviderId(
                 ClassicDisplayURLProvider.class.getName()
         );
@@ -41,7 +53,7 @@ public class DisplayURLProviderTest {
         MockFolder folder = rule.createFolder("my folder");
         FreeStyleProject p = folder.createProject(FreeStyleProject.class, "my job");
         Run<?, ?> b = rule.buildAndAssertSuccess(p);
-        asssertExternalUrls(p, b);
+        assertExternalUrls(p, b);
         assertEquals(DisplayURLProvider.get().getRoot() + "job/my%20folder/job/my%20job/1/",
                      b.getAction(RunDisplayAction.class).getDisplayUrl());
     }
@@ -94,13 +106,13 @@ public class DisplayURLProviderTest {
     }
 
     @Test
-    public void urlsWithSysPropProvider() throws Exception {
+    void urlsWithSysPropProvider() throws Exception {
         System.setProperty(DisplayURLProvider.JENKINS_DISPLAYURL_PROVIDER_PROP,
                            TestSysPropDisplayURLProvider.class.getName());
         MockFolder folder = rule.createFolder("my folder");
         FreeStyleProject p = folder.createProject(FreeStyleProject.class, "my job");
         Run<?, ?> b = rule.buildAndAssertSuccess(p);
-        asssertExternalUrls(p, b);
+        assertExternalUrls(p, b);
         assertEquals(DisplayURLProvider.get().getRoot() + "job/my%20folder/job/my%20job/1/" + TestSysPropDisplayURLProvider.EXTRA_CONTENT_IN_URL,
                 b.getAction(RunDisplayAction.class).getDisplayUrl());
     }
@@ -153,7 +165,7 @@ public class DisplayURLProviderTest {
     }
 
     @Test
-    public void urlsWithUserDefinedProvider() throws Exception {
+    void urlsWithUserDefinedProvider() throws Exception {
         rule.jenkins.setSecurityRealm(rule.createDummySecurityRealm());
         User foo = User.getById("foo", true);
 
@@ -164,14 +176,14 @@ public class DisplayURLProviderTest {
         FreeStyleProject p = folder.createProject(FreeStyleProject.class, "my job");
         Run<?, ?> b = rule.buildAndAssertSuccess(p);
         try (ACLContext unused = ACL.as(foo)) {
-            asssertExternalUrls(p, b);
+            assertExternalUrls(p, b);
             assertEquals(DisplayURLProvider.get().getRoot() + "job/my%20folder/job/my%20job/1/" + TestUserDisplayURLProvider.EXTRA_CONTENT_IN_URL,
                     b.getAction(RunDisplayAction.class).getDisplayUrl());
         }
     }
 
     @Test
-    public void decoration() throws Exception {
+    void decoration() throws Exception {
         MockFolder folder = rule.createFolder("my folder");
         FreeStyleProject project = (FreeStyleProject) folder
                 .createProject(rule.jenkins.getDescriptorByType(FreeStyleProject.DescriptorImpl.class), "my job",
@@ -179,7 +191,7 @@ public class DisplayURLProviderTest {
         Run<?, ?> run = project.scheduleBuild2(0).get();
 
         String root = DisplayURLProvider.get().getRoot();
-        assertEquals("http://localhost:" + rule.getLocalPort() + "/jenkins/", root);
+        assertEquals("http://localhost:" + rule.getURL().getPort() + "/jenkins/", root);
         assertEquals(root + "job/my%20folder/job/my%20job/1/display/redirect?utm_campaign=jenkins&utm_source=Jenkins"
                 + "&utm_term=my+folder%2Fmy+job%231", DisplayURLProvider.get().getRunURL(run));
         assertEquals(root + "job/my%20folder/job/my%20job/display/redirect?utm_campaign=jenkins&utm_source=Jenkins",
@@ -223,7 +235,7 @@ public class DisplayURLProviderTest {
     }
 
     @Test
-    public void providerConfigurationPrecedence() throws Exception {
+    void providerConfigurationPrecedence() throws Exception {
         rule.jenkins.setSecurityRealm(rule.createDummySecurityRealm());
         // user1 does not have a preference, but user2 does.
         User user1 = User.getById("user1", true);
@@ -241,11 +253,11 @@ public class DisplayURLProviderTest {
         }
     }
 
-    private void asssertExternalUrls(Job<?, ?> project, Run<?, ?> run) throws Exception {
+    private void assertExternalUrls(Job<?, ?> project, Run<?, ?> run) throws Exception {
         // No matter what configuration is being used, this plugin should always produce .../display/redirect URLs.
         // Configurations should only be applied when resolving a redirect URL.
         String root = DisplayURLProvider.get().getRoot();
-        assertEquals("http://localhost:" + rule.getLocalPort() + "/jenkins/", root);
+        assertEquals("http://localhost:" + rule.getURL().getPort() + "/jenkins/", root);
         assertEquals(root + "job/my%20folder/job/my%20job/1/display/redirect", DisplayURLProvider.get().getRunURL(run));
         assertEquals(root + "job/my%20folder/job/my%20job/display/redirect",
                 DisplayURLProvider.get().getJobURL(project));

@@ -7,26 +7,31 @@ import hudson.model.Job;
 import hudson.model.Run;
 import org.jenkinsci.plugins.displayurlapi.DefaultDisplayURLProviderGlobalConfiguration;
 import org.jenkinsci.plugins.displayurlapi.DisplayURLProvider;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.jvnet.hudson.test.JenkinsRule;
 import org.jvnet.hudson.test.TestExtension;
 
 import jakarta.servlet.http.HttpServletResponse;
+import org.jvnet.hudson.test.junit.jupiter.WithJenkins;
 
 import static io.restassured.RestAssured.given;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ActionRedirectExtendedTest extends AbstractActionRedirectTest {
+@WithJenkins
+class ActionRedirectExtendedTest extends AbstractActionRedirectTest {
 
-    @Before
-    public void setup() {
+    @BeforeEach
+    @Override
+    void setUp(JenkinsRule r) throws Exception {
+        super.setUp(r);
         DefaultDisplayURLProviderGlobalConfiguration.get().setProviderId(
                 AnotherDisplayURLProvider.class.getName()
         );
     }
 
     @Test
-    public void testRedirectForJobURL() {
+    void testRedirectForJobURL() {
         given()
             .urlEncodingEnabled(false)
             .redirects().follow(false)
@@ -36,7 +41,7 @@ public class ActionRedirectExtendedTest extends AbstractActionRedirectTest {
     }
 
     @Test
-    public void testRedirectForRunURL() {
+    void testRedirectForRunURL() {
         given()
             .urlEncodingEnabled(false)
             .redirects().follow(false)
@@ -46,7 +51,7 @@ public class ActionRedirectExtendedTest extends AbstractActionRedirectTest {
     }
 
     @Test
-    public void testRedirectForArtifactsURL() {
+    void testRedirectForArtifactsURL() {
         given()
             .urlEncodingEnabled(false)
             .redirects().follow(false)
@@ -56,7 +61,7 @@ public class ActionRedirectExtendedTest extends AbstractActionRedirectTest {
     }
 
     @Test
-    public void testRedirectForChangesURL() {
+    void testRedirectForChangesURL() {
         given()
             .urlEncodingEnabled(false)
             .redirects().follow(false)
@@ -66,7 +71,7 @@ public class ActionRedirectExtendedTest extends AbstractActionRedirectTest {
     }
 
     @Test
-    public void testRedirectForTestsURL() {
+    void testRedirectForTestsURL() {
         given()
             .urlEncodingEnabled(false)
             .redirects().follow(false)
@@ -76,7 +81,7 @@ public class ActionRedirectExtendedTest extends AbstractActionRedirectTest {
     }
 
     @Test
-    public void testRedirectForYetAnotherProviderParameter() {
+    void testRedirectForYetAnotherProviderParameter() {
         given()
             .urlEncodingEnabled(false)
             .redirects().follow(false)
@@ -86,9 +91,9 @@ public class ActionRedirectExtendedTest extends AbstractActionRedirectTest {
     }
 
     @Test
-    public void testUrls() {
+    void testUrls() throws Exception {
         String root = DisplayURLProvider.get().getRoot();
-        assertEquals("http://localhost:" + rule.getLocalPort() + "/jenkins/", root);
+        assertEquals("http://localhost:" + rule.getURL().getPort() + "/jenkins/", root);
         assertEquals(root + "job/my%20folder/job/my%20job/1/another", getRedirectedProvider().getRunURL(run));
         assertEquals(root + "job/my%20folder/job/my%20job/another", getRedirectedProvider().getJobURL(job));
         assertEquals(root + "job/my%20folder/job/my%20job/1/artifactanother", getRedirectedProvider().getArtifactsURL(run));
