@@ -3,7 +3,6 @@ package org.jenkinsci.plugins.displayurlapi.actions;
 import hudson.ExtensionList;
 import hudson.model.Action;
 import java.util.Objects;
-import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.plugins.displayurlapi.DisplayURLProvider;
 import org.kohsuke.stapler.StaplerRequest2;
 import org.kohsuke.stapler.StaplerResponse2;
@@ -40,7 +39,7 @@ public abstract class AbstractDisplayAction implements Action {
 
     DisplayURLProvider lookupProvider(StaplerRequest2 req) {
         final String providerName = req.getParameter("provider");
-        if (StringUtils.isNotEmpty(providerName)) {
+        if (providerName != null && !providerName.isEmpty()) {
             ExtensionList<DisplayURLProvider> providers = DisplayURLProvider.all();
             DisplayURLProvider provider = providers.stream()
                 .filter(Objects::nonNull)
