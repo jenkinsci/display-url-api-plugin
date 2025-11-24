@@ -9,11 +9,8 @@ import hudson.model.Job;
 import hudson.model.Run;
 import hudson.model.User;
 import jenkins.model.Jenkins;
-import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.plugins.displayurlapi.actions.AbstractDisplayAction;
 import org.jenkinsci.plugins.displayurlapi.user.PreferredProviderUserProperty;
-
-import static org.apache.commons.lang.StringUtils.isNotEmpty;
 
 /**
  * Generates URLs for well known UI locations for use in notifications (e.g. mailer, HipChat, Slack,
@@ -183,7 +180,7 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
 
     private static String findClass() {
         String clazz = System.getenv(JENKINS_DISPLAYURL_PROVIDER_ENV);
-        if (StringUtils.isEmpty(clazz)) {
+        if (clazz == null || clazz.isEmpty()) {
             clazz = System.getProperty(JENKINS_DISPLAYURL_PROVIDER_PROP);
         }
         return clazz;
@@ -214,7 +211,7 @@ public abstract class DisplayURLProvider implements ExtensionPoint {
             return globalGuiProvider;
         }
         String globalProviderClass = findClass();
-        if (isNotEmpty(globalProviderClass)) {
+        if (globalProviderClass != null && !globalProviderClass.isEmpty()) {
             return ExtensionList.lookup(DisplayURLProvider.class).getDynamic(globalProviderClass);
         }
         ExtensionList<DisplayURLProvider> all = DisplayURLProvider.all();
