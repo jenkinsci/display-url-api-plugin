@@ -8,24 +8,26 @@ import hudson.model.Job;
 import hudson.model.Run;
 import hudson.tasks.ArtifactArchiver;
 import org.jenkinsci.plugins.displayurlapi.DisplayURLProvider;
-import org.jenkinsci.plugins.displayurlapi.JenkinsRuleWithLocalPort;
-import org.junit.Before;
-import org.junit.Rule;
+import org.junit.jupiter.api.BeforeEach;
+import org.jvnet.hudson.test.JenkinsRule;
 import org.jvnet.hudson.test.MockFolder;
 import org.jvnet.hudson.test.TestBuilder;
+import org.jvnet.hudson.test.junit.jupiter.WithJenkins;
 
 import java.io.IOException;
 
-public abstract class AbstractActionRedirectTest {
+@WithJenkins
+abstract class AbstractActionRedirectTest {
     protected Job job;
     protected Run<?, ?> run;
     protected DisplayURLProvider provider;
 
-    @Rule
-    public JenkinsRuleWithLocalPort rule = new JenkinsRuleWithLocalPort();
+    protected JenkinsRule rule;
 
-    @Before
-    public void createJobAndRun() throws Exception {
+    @BeforeEach
+    void setUp(JenkinsRule r) throws Exception {
+        rule = r;
+
         MockFolder folder = rule.createFolder("my folder");
         FreeStyleProject job = (FreeStyleProject) folder.createProject(rule.jenkins.getDescriptorByType(FreeStyleProject.DescriptorImpl.class), "my job", false);
         job.getBuildersList().add(new CreateArtifact());

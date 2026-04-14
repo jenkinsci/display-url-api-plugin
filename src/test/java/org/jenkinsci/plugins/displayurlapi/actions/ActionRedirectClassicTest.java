@@ -7,29 +7,33 @@ import com.google.common.collect.Iterables;
 import org.jenkinsci.plugins.displayurlapi.ClassicDisplayURLProvider;
 import org.jenkinsci.plugins.displayurlapi.DefaultDisplayURLProviderGlobalConfiguration;
 import org.jenkinsci.plugins.displayurlapi.DisplayURLProvider;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.jvnet.hudson.test.JenkinsRule;
 
 import jakarta.servlet.http.HttpServletResponse;
+import org.jvnet.hudson.test.junit.jupiter.WithJenkins;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 import static io.restassured.RestAssured.given;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ActionRedirectClassicTest extends AbstractActionRedirectTest {
+@WithJenkins
+class ActionRedirectClassicTest extends AbstractActionRedirectTest {
 
-    @Before
-    public void setup() {
+    @BeforeEach
+    @Override
+    void setUp(JenkinsRule r) throws Exception {
+        super.setUp(r);
         DefaultDisplayURLProviderGlobalConfiguration.get().setProviderId(
                 ClassicDisplayURLProvider.class.getName()
         );
     }
 
     @Test
-    public void testRedirectForJobURL() throws Exception {
+    void testRedirectForJobURL() throws Exception {
         given()
             .urlEncodingEnabled(false)
             .redirects().follow(false)
@@ -42,11 +46,11 @@ public class ActionRedirectClassicTest extends AbstractActionRedirectTest {
                 .withThrowExceptionOnFailingStatusCode(false);
 
         WebResponse rsp = wc.getPage(new WebRequest(new URL(provider.getJobURL(job)))).getWebResponse();
-        assertEquals(rsp.getContentAsString(), HttpURLConnection.HTTP_OK, rsp.getStatusCode());
+        assertEquals(HttpURLConnection.HTTP_OK, rsp.getStatusCode(), rsp.getContentAsString());
     }
 
     @Test
-    public void testRedirectForRunURL() throws Exception {
+    void testRedirectForRunURL() throws Exception {
         given()
             .urlEncodingEnabled(false)
             .redirects().follow(false)
@@ -59,11 +63,11 @@ public class ActionRedirectClassicTest extends AbstractActionRedirectTest {
                 .withThrowExceptionOnFailingStatusCode(false);
 
         WebResponse rsp = wc.getPage(new WebRequest(new URL(provider.getRunURL(run)))).getWebResponse();
-        assertEquals(rsp.getContentAsString(), HttpURLConnection.HTTP_OK, rsp.getStatusCode());
+        assertEquals(HttpURLConnection.HTTP_OK, rsp.getStatusCode(), rsp.getContentAsString());
     }
 
     @Test
-    public void testRedirectForArtifactsURL() throws Exception {
+    void testRedirectForArtifactsURL() throws Exception {
         given()
             .urlEncodingEnabled(false)
             .redirects().follow(false)
@@ -76,11 +80,11 @@ public class ActionRedirectClassicTest extends AbstractActionRedirectTest {
                 .withThrowExceptionOnFailingStatusCode(false);
 
         WebResponse rsp = wc.getPage(new WebRequest(new URL(provider.getArtifactsURL(run)))).getWebResponse();
-        assertEquals(rsp.getContentAsString(), HttpURLConnection.HTTP_OK, rsp.getStatusCode());
+        assertEquals(HttpURLConnection.HTTP_OK, rsp.getStatusCode(), rsp.getContentAsString());
     }
 
     @Test
-    public void testRedirectForChangesURL() {
+    void testRedirectForChangesURL() {
         given()
                 .urlEncodingEnabled(false)
                 .redirects().follow(false)
@@ -90,7 +94,7 @@ public class ActionRedirectClassicTest extends AbstractActionRedirectTest {
     }
 
     @Test
-    public void testRedirectForTestsURL() {
+    void testRedirectForTestsURL() {
         given()
                 .urlEncodingEnabled(false)
                 .redirects().follow(false)
