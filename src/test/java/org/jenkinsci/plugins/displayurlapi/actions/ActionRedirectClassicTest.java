@@ -11,12 +11,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
 
-import jakarta.servlet.http.HttpServletResponse;
-
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import static io.restassured.RestAssured.given;
 import static org.junit.Assert.assertEquals;
 
 public class ActionRedirectClassicTest extends AbstractActionRedirectTest {
@@ -30,12 +27,7 @@ public class ActionRedirectClassicTest extends AbstractActionRedirectTest {
 
     @Test
     public void testRedirectForJobURL() throws Exception {
-        given()
-            .urlEncodingEnabled(false)
-            .redirects().follow(false)
-            .when().get(provider.getJobURL(job)).then()
-            .statusCode(HttpServletResponse.SC_MOVED_TEMPORARILY)
-            .header("Location", getRedirectedProvider().getJobURL(job));
+        assertRedirect(provider.getJobURL(job), getRedirectedProvider().getJobURL(job));
 
         JenkinsRule.WebClient wc = rule.createWebClient()
                 .withRedirectEnabled(true)
@@ -47,12 +39,7 @@ public class ActionRedirectClassicTest extends AbstractActionRedirectTest {
 
     @Test
     public void testRedirectForRunURL() throws Exception {
-        given()
-            .urlEncodingEnabled(false)
-            .redirects().follow(false)
-            .when().get(provider.getRunURL(run)).then()
-            .statusCode(HttpServletResponse.SC_MOVED_TEMPORARILY)
-            .header("Location", getRedirectedProvider().getRunURL(run));
+        assertRedirect(provider.getRunURL(run), getRedirectedProvider().getRunURL(run));
 
         JenkinsRule.WebClient wc = rule.createWebClient()
                 .withRedirectEnabled(true)
@@ -64,12 +51,7 @@ public class ActionRedirectClassicTest extends AbstractActionRedirectTest {
 
     @Test
     public void testRedirectForArtifactsURL() throws Exception {
-        given()
-            .urlEncodingEnabled(false)
-            .redirects().follow(false)
-            .when().get(provider.getArtifactsURL(run)).then()
-            .statusCode(HttpServletResponse.SC_MOVED_TEMPORARILY)
-            .header("Location", getRedirectedProvider().getArtifactsURL(run));
+        assertRedirect(provider.getArtifactsURL(run), getRedirectedProvider().getArtifactsURL(run));
 
         JenkinsRule.WebClient wc = rule.createWebClient()
                 .withRedirectEnabled(true)
@@ -80,23 +62,13 @@ public class ActionRedirectClassicTest extends AbstractActionRedirectTest {
     }
 
     @Test
-    public void testRedirectForChangesURL() {
-        given()
-                .urlEncodingEnabled(false)
-                .redirects().follow(false)
-                .when().get(provider.getChangesURL(run)).then()
-                .statusCode(HttpServletResponse.SC_MOVED_TEMPORARILY)
-                .header("Location", getRedirectedProvider().getChangesURL(run));
+    public void testRedirectForChangesURL() throws Exception {
+        assertRedirect(provider.getChangesURL(run), getRedirectedProvider().getChangesURL(run));
     }
 
     @Test
-    public void testRedirectForTestsURL() {
-        given()
-                .urlEncodingEnabled(false)
-                .redirects().follow(false)
-                .when().get(provider.getTestsURL(run)).then()
-                .statusCode(HttpServletResponse.SC_MOVED_TEMPORARILY)
-                .header("Location", getRedirectedProvider().getTestsURL(run));
+    public void testRedirectForTestsURL() throws Exception {
+        assertRedirect(provider.getTestsURL(run), getRedirectedProvider().getTestsURL(run));
     }
 
     @Override
