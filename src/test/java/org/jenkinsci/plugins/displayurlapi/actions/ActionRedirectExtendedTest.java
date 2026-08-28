@@ -11,9 +11,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.jvnet.hudson.test.TestExtension;
 
-import jakarta.servlet.http.HttpServletResponse;
-
-import static io.restassured.RestAssured.given;
 import static org.junit.Assert.assertEquals;
 
 public class ActionRedirectExtendedTest extends AbstractActionRedirectTest {
@@ -26,63 +23,35 @@ public class ActionRedirectExtendedTest extends AbstractActionRedirectTest {
     }
 
     @Test
-    public void testRedirectForJobURL() {
-        given()
-            .urlEncodingEnabled(false)
-            .redirects().follow(false)
-            .when().get(provider.getJobURL(job)).then()
-            .statusCode(HttpServletResponse.SC_MOVED_TEMPORARILY)
-            .header("Location", getRedirectedProvider().getJobURL(job));
+    public void testRedirectForJobURL() throws Exception {
+        assertRedirect(provider.getJobURL(job), getRedirectedProvider().getJobURL(job));
     }
 
     @Test
-    public void testRedirectForRunURL() {
-        given()
-            .urlEncodingEnabled(false)
-            .redirects().follow(false)
-            .when().get(provider.getRunURL(run)).then()
-            .statusCode(HttpServletResponse.SC_MOVED_TEMPORARILY)
-            .header("Location", getRedirectedProvider().getRunURL(run));
+    public void testRedirectForRunURL() throws Exception {
+        assertRedirect(provider.getRunURL(run), getRedirectedProvider().getRunURL(run));
     }
 
     @Test
-    public void testRedirectForArtifactsURL() {
-        given()
-            .urlEncodingEnabled(false)
-            .redirects().follow(false)
-            .when().get(provider.getArtifactsURL(run)).then()
-            .statusCode(HttpServletResponse.SC_MOVED_TEMPORARILY)
-            .header("Location", getRedirectedProvider().getArtifactsURL(run));
+    public void testRedirectForArtifactsURL() throws Exception {
+        assertRedirect(provider.getArtifactsURL(run), getRedirectedProvider().getArtifactsURL(run));
     }
 
     @Test
-    public void testRedirectForChangesURL() {
-        given()
-            .urlEncodingEnabled(false)
-            .redirects().follow(false)
-            .when().get(provider.getChangesURL(run)).then()
-            .statusCode(HttpServletResponse.SC_MOVED_TEMPORARILY)
-            .header("Location", getRedirectedProvider().getChangesURL(run));
+    public void testRedirectForChangesURL() throws Exception {
+        assertRedirect(provider.getChangesURL(run), getRedirectedProvider().getChangesURL(run));
     }
 
     @Test
-    public void testRedirectForTestsURL() {
-        given()
-            .urlEncodingEnabled(false)
-            .redirects().follow(false)
-            .when().get(provider.getTestsURL(run)).then()
-            .statusCode(HttpServletResponse.SC_MOVED_TEMPORARILY)
-            .header("Location", getRedirectedProvider().getTestsURL(run));
+    public void testRedirectForTestsURL() throws Exception {
+        assertRedirect(provider.getTestsURL(run), getRedirectedProvider().getTestsURL(run));
     }
 
     @Test
-    public void testRedirectForYetAnotherProviderParameter() {
-        given()
-            .urlEncodingEnabled(false)
-            .redirects().follow(false)
-            .when().get(provider.getChangesURL(run) + "&provider=YetAnotherDisplayURLProvider").then()
-            .statusCode(HttpServletResponse.SC_MOVED_TEMPORARILY)
-            .header("Location", getYetAnotherRedirectedProvider().getChangesURL(run));
+    public void testRedirectForYetAnotherProviderParameter() throws Exception {
+        assertRedirect(
+                provider.getChangesURL(run) + "&provider=YetAnotherDisplayURLProvider",
+                getYetAnotherRedirectedProvider().getChangesURL(run));
     }
 
     @Test

@@ -80,45 +80,6 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>io.rest-assured</groupId>
-      <artifactId>rest-assured</artifactId>
-      <version>6.0.1</version>
-      <scope>test</scope>
-      <exclusions>
-        <!-- Provided by commons-lang3-api plugin -->
-        <exclusion>
-          <groupId>org.apache.commons</groupId>
-          <artifactId>commons-lang3</artifactId>
-        </exclusion>
-        <!-- Provided by core -->
-        <exclusion>
-          <groupId>org.apache.groovy</groupId>
-          <artifactId>groovy</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.groovy</groupId>
-          <artifactId>groovy-json</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.groovy</groupId>
-          <artifactId>groovy-xml</artifactId>
-        </exclusion>
-        <!-- Provided by apache-httpcomponents-client-4-api plugin -->
-        <exclusion>
-          <groupId>org.apache.httpcomponents</groupId>
-          <artifactId>httpclient</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.httpcomponents</groupId>
-          <artifactId>httpcore</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.httpcomponents</groupId>
-          <artifactId>httpmime</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
       <groupId>org.jenkins-ci.plugins</groupId>
       <artifactId>apache-httpcomponents-client-4-api</artifactId>
       <scope>test</scope>

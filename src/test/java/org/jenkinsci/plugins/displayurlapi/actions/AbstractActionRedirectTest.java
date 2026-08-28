@@ -7,6 +7,8 @@ import hudson.model.FreeStyleProject;
 import hudson.model.Job;
 import hudson.model.Run;
 import hudson.tasks.ArtifactArchiver;
+import org.htmlunit.WebRequest;
+import org.htmlunit.WebResponse;
 import org.jenkinsci.plugins.displayurlapi.DisplayURLProvider;
 import org.jenkinsci.plugins.displayurlapi.JenkinsRuleWithLocalPort;
 import org.junit.Before;
@@ -15,6 +17,8 @@ import org.jvnet.hudson.test.MockFolder;
 import org.jvnet.hudson.test.TestBuilder;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public abstract class AbstractActionRedirectTest {
     protected Job job;
@@ -43,4 +47,14 @@ public abstract class AbstractActionRedirectTest {
     }
 
     protected abstract DisplayURLProvider getRedirectedProvider();
+
+    protected void assertRedirect(String source, String destination) throws IOException {
+        WebResponse response = rule.createWebClient()
+                .withRedirectEnabled(false)
+                .withThrowExceptionOnFailingStatusCode(false)
+                .getPage(new WebRequest(new URL(source)))
+                .getWebResponse();
+        org.junit.Assert.assertEquals(HttpURLConnection.HTTP_MOVED_TEMP, response.getStatusCode());
+        org.junit.Assert.assertEquals(destination, response.getResponseHeaderValue("Location"));
+    }
 }
