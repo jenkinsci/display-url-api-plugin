@@ -92,7 +92,7 @@ public class ActionRedirectExtendedTest extends AbstractActionRedirectTest {
         assertEquals(root + "job/my%20folder/job/my%20job/1/another", getRedirectedProvider().getRunURL(run));
         assertEquals(root + "job/my%20folder/job/my%20job/another", getRedirectedProvider().getJobURL(job));
         assertEquals(root + "job/my%20folder/job/my%20job/1/artifactanother", getRedirectedProvider().getArtifactsURL(run));
-        assertEquals(root + "job/my%20folder/job/my%20job/changesanother", getRedirectedProvider().getChangesURL(run));
+        assertEquals(root + "job/my%20folder/job/my%20job/1/changesanother", getRedirectedProvider().getChangesURL(run));
         assertEquals(root + "job/my%20folder/job/my%20job/1/testReportanother", getRedirectedProvider().getTestsURL(run));
     }
 

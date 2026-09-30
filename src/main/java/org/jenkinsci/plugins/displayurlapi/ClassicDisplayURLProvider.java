@@ -33,7 +33,7 @@ public class ClassicDisplayURLProvider extends DisplayURLProvider {
     @Override
     @NonNull
     public String getChangesURL(Run<?, ?> run) {
-        return getJobURL(run.getParent()) + "changes";
+        return getRunURL(run) + "changes";
     }
 
     @Override
